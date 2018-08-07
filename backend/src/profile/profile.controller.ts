@@ -7,6 +7,7 @@ import * as mkdirp from 'mkdirp';
 import { ProfileService } from './profile.service';
 import { NewsService } from '../news/news.service';
 import { ProfileResponse, PublicProfile, StartMiningResponse } from '@shared/responses';
+import paths from '../paths';
 
 @Controller('profile')
 export class ProfileController {
@@ -35,16 +36,16 @@ export class ProfileController {
 
   @Post('uploadPhoto')
   @UseGuards(AuthGuard('jwt'))
-  @UseInterceptors(FileInterceptor('photo', {dest: __dirname + '/../../data/upload'}))
+  @UseInterceptors(FileInterceptor('photo', {dest: paths.upload}))
   async uploadPhoto(@Request() {user}, @UploadedFile() photo): Promise<'success'> {
     if (!photo) throw new BadRequestException();
     let success = false;
 
     try {
-      const newPath = __dirname + '/../../public/photo';
+      const newPath = paths.photo;
       await new Promise((resolve, reject) => mkdirp(newPath, (err) => !err ? resolve() : reject(err)));
       await new Promise((resolve, reject) => {
-        rename(photo.path, newPath + '/' + user.id + '.png', (err) => !err ? resolve() : reject(err));
+        rename(photo.path, `${newPath}/${user.id}.png`, (err) => !err ? resolve() : reject(err));
       });
 
       this.profileService.setUploadedPhoto(user.id, true);

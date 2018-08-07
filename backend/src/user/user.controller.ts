@@ -9,6 +9,7 @@ import { ProfileService } from '../profile/profile.service';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 import { NewsService } from '../news/news.service';
+import paths from '../paths';
 
 @Controller('user')
 export class UserController {
@@ -21,7 +22,7 @@ export class UserController {
 
   @Post('register')
   @HttpCode(201)
-  @UseInterceptors(FileInterceptor('quenta', {dest: __dirname + '/../../data/upload'}))
+  @UseInterceptors(FileInterceptor('quenta', {dest: paths.upload}))
   async register(@Body() body: any, @UploadedFile() quenta): Promise<'success'> {
     if (quenta) this.logger.log(`File uploaded: quenta: ${quenta.originalname}`);
     let success = false;
@@ -56,7 +57,7 @@ export class UserController {
 
       try {
         if (quenta) {
-          const newPath = __dirname + '/../../public/quenta/' + user.id;
+          const newPath = paths.quenta + '/' + user.id;
           await new Promise((resolve, reject) => mkdirp(newPath, (err) => !err ? resolve() : reject(err)));
           await new Promise((resolve, reject) => {
             rename(quenta.path, newPath + '/' + quenta.originalname, (err) => !err ? resolve() : reject(err));
