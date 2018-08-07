@@ -86,7 +86,7 @@ export default class Login extends Vue {
   private submit(): void {
     this.dirty.email = true;
     this.dirty.password = true;
-    if (!this.emailState || !this.passwordState) return;
+    if (this.emailState !== null || this.passwordState !== null) return;
 
     this.$store.dispatch('auth/login', this.form);
   }

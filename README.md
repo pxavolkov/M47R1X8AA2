@@ -28,9 +28,9 @@ npm run dev # monitor for any changes in frontend and automatically restart the 
 2. Set connection settings
 3. Set `MYSQL_TRUNCATE=false` if you don't want to truncate mysql tables before migration
 4. Set `MIGRATE_FILES=true` if you want to migrate photos and quentas
-  1. Set `CLEAR_FILES=false` if you don't want to remove files in `migration-utility/new-data`
-  2. Place all photos in `migration-utility/old-data/Avatars`
-  3. Place all quentas in `migration-utility/old-data/Quenta`
+   1. Set `CLEAR_FILES=false` if you don't want to remove files in `migration-utility/new-data`
+   2. Place all photos in `migration-utility/old-data/Avatars`
+   3. Place all quentas in `migration-utility/old-data/Quenta`
 5. Run:
 ```bash
 cd migration-utility
