@@ -1,12 +1,19 @@
 <template>
-  <div class="container main">
+  <div class="container main" style="max-width: 540px;">
     <GlobalAlert/>
-    <nav class="navbar navbar-toggleable-md">
-      <router-link to="/Profile" class="navbar-brand yellow fontsize150" style="margin-left: auto; margin-right: auto;">Virtech inner web</router-link>
-      <h4 v-if="isLoggedIn" class="debug-header text-center text-danger">{{ email }} <button @click="logoutAndRedirect">Logout</button></h4>
+    <nav class="navbar navbar-dark">
+      <b-navbar-brand to="/Profile" class="yellow mx-auto">Virtech inner web</b-navbar-brand>
+      <template v-if="isLoggedIn">
+        <b-navbar-toggle target="nav_collapse" right></b-navbar-toggle>
+        <b-collapse is-nav id="nav_collapse" class="blue text-right">
+          <b-navbar-nav>
+            <b-nav-item @click="logoutAndRedirect">Выход</b-nav-item>
+          </b-navbar-nav>
+        </b-collapse>
+      </template>
     </nav>
     <b-row class="justify-content-center" style="margin-top: 10px;">
-      <b-col style="max-width: 540px;">
+      <b-col>
         <div class="topProgressBar" id="topProgressBar"><div></div></div>
         <router-view/>
       </b-col>
@@ -54,7 +61,7 @@ export default class Main extends Vue {
 }
 
 .yellow {
-  color: #FFF7B2;
+  color: #FFF7B2 !important;
 }
 
 .lightGreen {
@@ -129,5 +136,25 @@ export default class Main extends Vue {
   -webkit-border-radius: 10px;
   cursor: pointer;
   background-color: transparent;
+}
+
+.navbar-brand {
+  font-size: 150%;
+  &:hover {
+    color: #0056b3 !important;
+  }
+}
+
+.navbar-toggler {
+  border: 2px solid #107FA9 !important;
+  border-radius: 5px;
+}
+
+.nav-item a {
+  color: #0098DA !important;
+  opacity: .7;
+  &:hover {
+    opacity: 1;
+  }
 }
 </style>
