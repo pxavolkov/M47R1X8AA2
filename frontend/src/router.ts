@@ -109,7 +109,8 @@ store.watch(
   ((state: any, getters: any) => getters['auth/isLoggedIn']) as any,
   (isLoggedIn: boolean) => {
     if (isLoggedIn && router.currentRoute.matched.some((r) => r.meta.requiresNoAuth)) {
-      router.push('/Profile');
+      if (router.currentRoute.query.ReturnUrl) router.push(router.currentRoute.query.ReturnUrl);
+      else router.push('/Profile');
     } else if (!isLoggedIn && router.currentRoute.matched.some((r) => r.meta.requiresAuth)) {
       router.push('/Account/Login?ReturnUrl=' + router.currentRoute.fullPath);
     }
