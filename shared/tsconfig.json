@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "strict": true,
+    "jsx": "preserve",
+    "importHelpers": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "declaration": true,
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": "./src",
+    "types": [
+      "node"
+    ],
+    "lib": [
+      "es2015",
+      "scripthost"
+    ]
+  },
+  "include": [
+    "*.ts",
+    "*.tsx",
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

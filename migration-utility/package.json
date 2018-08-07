@@ -1,0 +1,32 @@
+{
+  "name": "migration-utility",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build-win": "rd /s /q dist && tsc",
+    "build": "rm -rf dist && tsc",
+    "start": "node dist/index.js"
+  },
+  "author": "Livan",
+  "license": "ISC",
+  "dependencies": {
+    "@types/mkdirp": "^0.5.2",
+    "chalk": "^2.4.1",
+    "mkdirp": "^0.5.1",
+    "mssql": "^4.1.0",
+    "mysql2": "^1.5.3",
+    "rimraf": "^2.6.2",
+    "tedious": "^2.2.4",
+    "ts-node": "^7.0.0",
+    "typescript": "^2.9.2"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^4.0.3",
+    "@types/mssql": "^4.0.8",
+    "@types/mysql2": "github:types/mysql2",
+    "@types/node": "^10.5.3",
+    "@types/rimraf": "^2.0.2",
+    "dotenv": "^6.0.0"
+  }
+}
