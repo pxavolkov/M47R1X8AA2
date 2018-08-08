@@ -47,7 +47,7 @@ const router = new Router({
           meta: {requiresNoAuth: true},
         },
         {
-          path: '/Approval',
+          path: '/Account/Approval',
           name: 'Approval',
           component: Approval,
           meta: {requiresNoAuth: true},

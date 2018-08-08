@@ -20,7 +20,7 @@
         :invalid-feedback="errors.password"
         :state="state('password')"
       >
-        <b-form-input id="inputPassword" :state="state('password')" v-model="form.password" @blur.native="update('password')"></b-form-input>
+        <b-form-input type="password" id="inputPassword" :state="state('password')" v-model="form.password" @blur.native="update('password')"></b-form-input>
       </b-form-group>
 
       <b-form-group
