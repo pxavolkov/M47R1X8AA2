@@ -23,7 +23,7 @@ export class Profile {
   @Column('int')
   age: number;
 
-  @Column()
+  @Column({default: false})
   photoUploaded: boolean;
 
   @Column({nullable: true})
