@@ -47,7 +47,7 @@ export class UserController {
       }
 
       try {
-        await this.profileService.register(user, data, quenta.originalname);
+        await this.profileService.register(user, data, quenta ? quenta.originalname : null);
       } catch (err) {
         try {
           this.userService.remove(user);
