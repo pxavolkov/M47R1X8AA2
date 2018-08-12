@@ -1,5 +1,8 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, ManyToMany, JoinTable } from 'typeorm';
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, Unique, ManyToMany, JoinTable,
+  OneToOne } from 'typeorm';
 import { News } from '../news/news.entity';
+import { RolesTransformer, Roles } from './roles';
+import { Profile } from '../profile/profile.entity';
 
 @Entity('users')
 @Unique(['email'])
@@ -39,4 +42,10 @@ export class User {
     ],
   })
   readNews: News[];
+
+  @Column({type: 'int', default: 0, transformer: new RolesTransformer()})
+  roles: Roles;
+
+  @OneToOne(type => Profile, profile => profile.user)
+  profile: Profile;
 }
