@@ -11,6 +11,7 @@ import { ProfileService } from '../profile/profile.service';
 import { ProfileModule } from '../profile/profile.module';
 import { GiftModule } from '../gift/gift.module';
 import { TransactionModule } from '../transaction/transaction.module';
+import { MasterModule } from '../master/master.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { TransactionModule } from '../transaction/transaction.module';
     ProfileModule,
     TransactionModule,
     GiftModule,
+    MasterModule,
   ],
   controllers: [AppController],
 })

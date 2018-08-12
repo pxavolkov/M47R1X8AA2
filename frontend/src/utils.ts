@@ -4,4 +4,6 @@ export default {
   getRandomInt(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min)) + min;
   },
+  // tslint:disable-next-line max-line-length
+  urlRegex: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/i,
 };

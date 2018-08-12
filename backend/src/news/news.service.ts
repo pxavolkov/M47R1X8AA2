@@ -22,4 +22,12 @@ export class NewsService {
   async all(): Promise<News[]> {
     return await this.newsRepository.find();
   }
+
+  async update(id: number, data: News): Promise<void> {
+    await this.newsRepository.update({id}, data);
+  }
+
+  async add(data: News): Promise<News> {
+    return await this.newsRepository.save(data);
+  }
 }

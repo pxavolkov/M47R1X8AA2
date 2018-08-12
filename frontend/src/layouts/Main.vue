@@ -1,28 +1,32 @@
 <template>
-  <div class="container main" style="max-width: 540px;">
+  <div class="main">
     <GlobalAlert/>
-    <nav class="navbar navbar-dark">
-      <b-navbar-brand to="/Profile" class="yellow mx-auto">Virtech inner web</b-navbar-brand>
-      <template v-if="isLoggedIn">
-        <b-navbar-toggle target="nav_collapse" right></b-navbar-toggle>
-        <b-collapse is-nav id="nav_collapse" class="blue text-right">
-          <b-navbar-nav>
-            <b-nav-item @click="logoutAndRedirect">Выход</b-nav-item>
-          </b-navbar-nav>
-        </b-collapse>
-      </template>
-    </nav>
-    <b-row class="justify-content-center" style="margin-top: 10px;">
-      <b-col>
-        <div class="topProgressBar" id="topProgressBar"><div></div></div>
-        <router-view/>
-      </b-col>
-    </b-row>
+    <b-container style="max-width:540px">
+      <nav class="navbar navbar-dark">
+        <b-navbar-brand to="/Profile" class="yellow mx-auto">Virtech inner web</b-navbar-brand>
+        <template v-if="isLoggedIn">
+          <b-navbar-toggle target="nav_collapse" right></b-navbar-toggle>
+          <b-collapse is-nav id="nav_collapse" class="blue text-right">
+            <b-navbar-nav>
+              <b-nav-item @click="logoutAndRedirect">Выход</b-nav-item>
+            </b-navbar-nav>
+          </b-collapse>
+        </template>
+      </nav>
+      <div class="topProgressBar" id="topProgressBar"><div></div></div>
+    </b-container>
+    <b-container :fluid="fluid" :style="{maxWidth: fluid ? '' : '540px'}">
+      <b-row class="justify-content-center">
+        <b-col>
+          <router-view/>
+        </b-col>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Vue, Prop } from 'vue-property-decorator';
 import { Action, Getter } from 'vuex-class';
 import GlobalAlert from '@/components/GlobalAlert.vue';
 
@@ -30,6 +34,7 @@ const namespace: string = 'auth';
 
 @Component({components: {GlobalAlert}})
 export default class Main extends Vue {
+  @Prop(Boolean) private fluid!: boolean;
   @Getter('email', { namespace }) private email!: string;
   @Action('logout', { namespace }) private logout!: () => void;
   @Getter('isLoggedIn', { namespace }) private isLoggedIn!: boolean;
@@ -91,10 +96,6 @@ export default class Main extends Vue {
   width:40%;
   float:right;
   margin-right: 15px;
-}
-
-#topProgressBar {
-  margin-top: -11px;
 }
 
 #nameSearch::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */

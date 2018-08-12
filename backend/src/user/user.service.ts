@@ -17,6 +17,25 @@ export class UserService {
     return await this.userRepository.find();
   }
 
+  async findAllForMaster(): Promise<User[]> {
+    return await this.userRepository.createQueryBuilder('user')
+      .select('user.id')
+      .addSelect('user.playerName')
+      .addSelect('user.playerAge')
+      .addSelect('user.info')
+      .addSelect('user.allergy')
+      .addSelect('user.registrationDate')
+      .addSelect('user.email')
+      .addSelect('profile.firstName')
+      .addSelect('profile.lastName')
+      .addSelect('profile.sex')
+      .addSelect('profile.age')
+      .addSelect('profile.quentaPath')
+      .addSelect('profile.isCitizen')
+      .leftJoin('user.profile', 'profile')
+      .getMany();
+  }
+
   async findOneByEmail(email: string): Promise<User> {
     return await this.userRepository.findOne({ email });
   }

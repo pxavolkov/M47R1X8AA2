@@ -13,6 +13,8 @@ import Shop from './views/Shop.vue';
 import News from './views/News.vue';
 import User from './views/User.vue';
 import NotFound from './views/NotFound.vue';
+import MasterUsers from './views/MasterUsers.vue';
+import MasterNews from './views/MasterNews.vue';
 
 Vue.use(Router);
 
@@ -85,6 +87,26 @@ const router = new Router({
       ],
     },
     {
+      path: '/Master',
+      name: 'Master',
+      component: MainLayout,
+      props: {fluid: true},
+      children: [
+        {
+          path: 'Register',
+          name: 'MasterUsers',
+          component: MasterUsers,
+          meta: {requiresAuth: true},
+        },
+        {
+          path: 'News',
+          name: 'MasterNews',
+          component: MasterNews,
+          meta: {requiresAuth: true},
+        },
+      ],
+    },
+    {
       path: '/404',
       name: '404',
       component: NotFound,
@@ -97,11 +119,11 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   if (store.getters['auth/isLoggedIn'] && to.matched.some((record) => record.meta.requiresNoAuth)) {
-      next('/Profile');
+    next('/Profile');
   } else if (!store.getters['auth/isLoggedIn'] && to.matched.some((record) => record.meta.requiresAuth)) {
-      next('/Account/Login?ReturnUrl=' + to.fullPath);
+    next('/Account/Login?ReturnUrl=' + to.fullPath);
   } else {
-      next();
+    next();
   }
 });
 

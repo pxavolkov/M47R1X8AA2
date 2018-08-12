@@ -96,4 +96,8 @@ export class ProfileService {
     }
     this.logger.log(`Mining updated for all users (${profiles.length})!`);
   }
+
+  async setCitizen(id: number, isCitizen: boolean): Promise<void> {
+    await this.profileRepository.update({userId: id}, {isCitizen});
+  }
 }
