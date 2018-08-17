@@ -3,14 +3,6 @@
     <b-col cols="0" sm="2"></b-col>
     <b-col cols="12" sm="8" class="p-0">
       <b-row>
-        <b-modal ref="disabledModal" id="disabledModal" hide-header hide-footer>
-          <form>
-            <div class="form-group">
-              <span class="col-form-label">Для использования функций Матрицы оплатите регистрационный взнос</span>
-            </div>
-          </form>
-        </b-modal>
-
         <b-col cols="6" sm="6">
           <router-link to="/Profile/UploadPhoto">
             <img v-if="profile.photoUploaded" :src="photoPath" class="avatar"/>
@@ -117,10 +109,14 @@ export default class Profile extends Vue {
     } else if (this.miningTimeLeft.length) this.miningTimeLeft = '';
   }
 
+  private payRequired() {
+    this.showAlert('blue', 'Для использования функций Матрицы оплатите регистрационный взнос');
+  }
+
   private news() {
     if (!this.isLoaded || !this.profile) return;
     if (this.profile.isCitizen) this.$router.push('/News');
-    else (this.$refs.disabledModal as any).show();
+    else this.payRequired();
   }
 
   private showAlert(type: string, text: string) {
@@ -128,6 +124,9 @@ export default class Profile extends Vue {
   }
 
   private startMining() {
+    if (!this.isLoaded || !this.profile) return;
+    if (!this.profile.isCitizen) return this.payRequired();
+
     this.startMiningAction()
       .then((response) => {
         if (this.profile) {

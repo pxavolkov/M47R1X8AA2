@@ -92,6 +92,8 @@ export class ProfileController {
   @Post('startMining')
   @UseGuards(AuthGuard('jwt'))
   async startMining(@Request() {user}): Promise<StartMiningResponse> {
+    if (!await this.profileService.isCitizen(user.id)) throw new ForbiddenException();
+
     const miningTime = await this.profileService.getMiningTime(user.id);
     if (!miningTime) {
       await this.profileService.startMining(user.id);

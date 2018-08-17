@@ -54,6 +54,10 @@ body {
   color: #0098DA;
 }
 
+.alert-blue {
+  color: #0098DA;
+}
+
 .green {
   color: #9DD3AF;
 }
