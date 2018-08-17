@@ -104,4 +104,8 @@ export class ProfileService {
   async isCitizen(id: number): Promise<boolean> {
     return (await this.profileRepository.findOneOrFail(id, {select: ['isCitizen']})).isCitizen;
   }
+
+  async setBalance(id: number, balance: number): Promise<void> {
+    await this.profileRepository.update({userId: id}, {balance});
+  }
 }

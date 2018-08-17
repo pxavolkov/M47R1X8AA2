@@ -45,4 +45,10 @@ export class MasterController {
   async addNews(@Body() data): Promise<News> {
     return await this.newsService.add(data);
   }
+
+  @Post('setBalance')
+  async setBalance(@Body() {userId, balance}): Promise<any> {
+    await this.profileService.setBalance(userId, balance);
+    return {userId, balance};
+  }
 }

@@ -2,6 +2,18 @@
   <div v-if="isLoaded">
     <h2 class="green text-center">Регистрации</h2>
     <b-button to="/Master/News" class="mb-2">Новости</b-button>
+
+    <b-modal id="balanceEditModal" size="sm" hide-header ok-title="Изменить" cancel-title="Отмена" @hidden="balanceEditError = ''" @ok="balanceEditSubmit">
+      <span>Имя: <span class="green">{{ balanceEditUserName }}</span></span><br/>
+      <b-form-group
+        horizontal
+        :label-cols="3"
+        label="Баланс: "
+        label-for="inputAmount">
+        <b-form-input size="sm" id="inputAmount" v-model="balanceEdit.balance"></b-form-input>
+      </b-form-group>
+    </b-modal>
+
     <b-table id="master-users" class="lightGreen" bordered hover :items="users" :fields="fields">
       <template slot="playerName" slot-scope="data">
         {{ data.value }} ({{ data.item.playerAge }})
@@ -15,6 +27,9 @@
       </template>
       <template slot="profile" slot-scope="data">
         Имя: {{ data.value.firstName }} {{ data.value.lastName }} (возраст: {{ data.value.age }}). Пол: {{ data.value.sex === Sex.MALE ? 'М' : 'Ж' }}
+      </template>
+      <template slot="balance" slot-scope="data">
+        {{ data.item.profile.balance }} <b-button size="sm" variant="primary" v-b-modal.balanceEditModal @click="setBalanceEdit(data.item)">Изменить</b-button>
       </template>
       <template slot="quenta" slot-scope="data">
         <a v-if="data.item.profile.quentaPath" :href="`/api/quenta/${data.item.id}/${data.item.profile.quentaPath}`" download>Скачать</a>
@@ -30,16 +45,24 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { State, Getter } from 'vuex-class';
+import { State, Getter, Action } from 'vuex-class';
 import { Sex } from 'shared/enums';
+import { User, SetBalance } from 'shared/master';
 import utils from '@/utils';
 
 const namespace: string = 'master';
 
 @Component
 export default class MasterUsers extends Vue {
-  @State((state) => state.master.users) private users!: any[];
+  @State((state) => state.master.users) private users!: User[];
   @Getter('isUsersLoaded', { namespace }) private isLoaded!: boolean;
+  @Action('setBalance', { namespace }) private setBalanceAction!: ({data: SetBalance}) => Promise<void>;
+
+  private balanceEdit = {
+    userId: 0,
+    balance: 0,
+  };
+  private balanceEditUserName = '';
 
   public beforeCreate() {
     this.$store.dispatch(`${namespace}/users`);
@@ -53,6 +76,7 @@ export default class MasterUsers extends Vue {
       {key: 'info', label: 'Контакт'},
       {key: 'allergy', label: 'Аллергии'},
       {key: 'profile', label: 'Персонаж'},
+      {key: 'balance', label: 'Баланс'},
       {key: 'quenta', label: 'Квента'},
       {key: 'actions', label: ''},
     ];
@@ -75,6 +99,24 @@ export default class MasterUsers extends Vue {
   private setCitizen(userId: number, isCitizen: boolean) {
     this.$store.dispatch(`${namespace}/setCitizen`, {data: {userId, isCitizen}});
   }
+
+  private showAlert(type: string, text: string) {
+    this.$store.commit('alert/show', {type, text});
+  }
+
+  private setBalanceEdit(user: User) {
+    this.balanceEdit.userId = user.id;
+    this.balanceEdit.balance = user.profile.balance;
+    this.balanceEditUserName = user.profile.firstName + ' ' + user.profile.lastName;
+  }
+
+  private async balanceEditSubmit() {
+    this.setBalanceAction({data: this.balanceEdit})
+      .then()
+      .catch((err: any) => {
+        this.showAlert('danger', `Ошибка при изменении баланса (${err.response.status})`);
+      });
+  }
 }
 </script>
 
@@ -82,5 +124,10 @@ export default class MasterUsers extends Vue {
 #master-users th {
   font-weight: normal;
   color: aqua;
+}
+
+#balanceEditModal .modal-content {
+  background-color: #00212F;
+  color: #fff;
 }
 </style>

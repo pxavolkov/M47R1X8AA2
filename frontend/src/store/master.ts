@@ -1,6 +1,6 @@
 import Vapi from 'vuex-rest-api';
 import { MasterState, GeneratedMasterState } from '@/store/types';
-import { SetCitizen, News } from 'shared/master';
+import { SetCitizen, News, SetBalance } from 'shared/master';
 
 const master = new Vapi({
     baseURL: '/api/master',
@@ -51,6 +51,14 @@ const master = new Vapi({
       const data = Object.assign({}, payload.data);
       data.createDate = new Date(data.createDate);
       state.news.push(data);
+    },
+  })
+  .post({
+    action: 'setBalance',
+    path: '/setBalance',
+    onSuccess: (state: MasterState, payload: {data: SetBalance}) => {
+      const user = state.users.find((v) => v.id === payload.data.userId);
+      if (user) user.profile.balance = payload.data.balance;
     },
   })
   .getStore();
