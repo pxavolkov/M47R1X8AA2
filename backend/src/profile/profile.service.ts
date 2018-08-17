@@ -97,16 +97,16 @@ export class ProfileService {
     this.logger.log(`Mining updated for all users (${profiles.length})!`);
   }
 
-  async setCitizen(id: number, isCitizen: boolean): Promise<void> {
-    await this.profileRepository.update({userId: id}, {isCitizen});
+  async setCitizen(userId: number, isCitizen: boolean): Promise<void> {
+    await this.profileRepository.update({userId}, {isCitizen});
   }
 
   async isCitizen(id: number): Promise<boolean> {
     return (await this.profileRepository.findOneOrFail(id, {select: ['isCitizen']})).isCitizen;
   }
 
-  async setBalance(id: number, balance: number): Promise<void> {
-    await this.profileRepository.update({userId: id}, {balance});
+  async setBalance(userId: number, balance: number): Promise<void> {
+    await this.profileRepository.update({userId}, {balance});
   }
 
   async setQuentaPath(userId: number, quentaPath: string): Promise<void> {
