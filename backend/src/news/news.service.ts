@@ -20,7 +20,7 @@ export class NewsService {
   }
 
   async all(): Promise<News[]> {
-    return await this.newsRepository.find();
+    return await this.newsRepository.find({order: {createDate: 'DESC'}});
   }
 
   async update(id: number, data: News): Promise<void> {

@@ -6,9 +6,10 @@
       <b-row class="blue">
         <b-col cols="0" sm="2"></b-col>
         <b-col cols="12" sm="8" class="p-0">
-          <NewsEditorItem v-for="(item, i) in news" :key="i" :news="item"/>
           <h3 class="green">Добавить новую новость</h3>
           <NewsEditorItem/>
+          <h3 class="green">Редактирование</h3>
+          <NewsEditorItem v-for="(item, i) in news" :key="i" :news="item"/>
         </b-col>
       </b-row>
     </b-container>
