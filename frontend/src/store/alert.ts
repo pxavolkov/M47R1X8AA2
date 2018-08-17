@@ -1,4 +1,4 @@
-import { Module, MutationTree } from 'vuex';
+import { Module, MutationTree, ActionTree } from 'vuex';
 import { RootState, AlertState } from './types';
 
 const state: AlertState = {
@@ -18,10 +18,17 @@ const mutations: MutationTree<AlertState> = {
   },
 };
 
+const actions: ActionTree<AlertState, RootState> = {
+  payRequired({ commit }) {
+    commit('show', {type: 'blue', text: 'Для использования функций Матрицы оплатите регистрационный взнос'});
+  },
+};
+
 const namespaced: boolean = true;
 
 export const alert: Module<AlertState, RootState> = {
     namespaced,
     state,
     mutations,
+    actions,
 };

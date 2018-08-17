@@ -21,10 +21,22 @@ const namespace: string = 'news';
 @Component({components: {NewsItem}})
 export default class News extends Vue {
   @State((state) => state.news.news ? state.news.news.news : []) private news!: NewsData[];
+  @Action('payRequired', { namespace: 'alert' }) private payRequired!: () => Promise<void>;
   private isLoaded: boolean = false;
 
   public beforeCreate() {
-    this.$store.dispatch(`${namespace}/load`);
+    this.$store.dispatch(`${namespace}/load`).catch((err) => {
+      if (err.response.status === 500) {
+        this.showAlert('danger', 'Ошибка при загрузке новостей. Обратитесь к администрации');
+      } else if (err.response.status === 403) this.payRequired();
+      else if (err.response.status !== 401) {
+        this.showAlert('danger', `Ошибка при загрузке новостей (${err.response.status})`);
+      }
+    });
+  }
+
+  private showAlert(type: string, text: string) {
+    this.$store.commit('alert/show', {type, text});
   }
 }
 </script>

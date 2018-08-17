@@ -72,6 +72,7 @@ export default class Profile extends Vue {
   @State((state) => state.profile.profile) private profile!: ProfileResponse | null;
   @Getter('isProfileLoaded', { namespace }) private isLoaded!: boolean;
   @Action('startMining', { namespace }) private startMiningAction!: () => Promise<{data: StartMiningResponse}>;
+  @Action('payRequired', { namespace }) private payRequired!: () => Promise<void>;
   private interval: number = -1;
   private miningTimeLeft: string = '';
 
@@ -107,10 +108,6 @@ export default class Profile extends Vue {
                               (time % 60).toString().padStart(2, '0');
       }
     } else if (this.miningTimeLeft.length) this.miningTimeLeft = '';
-  }
-
-  private payRequired() {
-    this.showAlert('blue', 'Для использования функций Матрицы оплатите регистрационный взнос');
   }
 
   private news() {

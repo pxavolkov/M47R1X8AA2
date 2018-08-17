@@ -1,9 +1,10 @@
-import { Controller, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request, ForbiddenException } from '@nestjs/common';
 import { Logger } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { NewsService } from '../news/news.service';
 import { NewsResponse } from '@shared/responses';
 import { UserService } from '../user/user.service';
+import { ProfileService } from '../profile/profile.service';
 
 @Controller('news')
 export class NewsController {
@@ -11,11 +12,14 @@ export class NewsController {
   constructor(
     private readonly newsService: NewsService,
     private readonly userService: UserService,
+    private readonly profileService: ProfileService,
   ) {}
 
   @Get('load')
   @UseGuards(AuthGuard('jwt'))
   async load(@Request() {user}): Promise<NewsResponse> {
+    if (!await this.profileService.isCitizen(user.id)) throw new ForbiddenException();
+
     const news = await this.newsService.all();
     this.userService.markReadNews(user, news);
     const response = new NewsResponse();
