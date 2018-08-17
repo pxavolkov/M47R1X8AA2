@@ -35,3 +35,8 @@ export interface SetBalance {
   userId: number;
   balance: number;
 }
+
+export interface UploadQuenta {
+  userId: number;
+  quentaPath: string;
+}

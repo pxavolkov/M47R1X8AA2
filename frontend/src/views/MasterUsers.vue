@@ -33,7 +33,13 @@
       </template>
       <template slot="quenta" slot-scope="data">
         <a v-if="data.item.profile.quentaPath" :href="`/api/quenta/${data.item.id}/${data.item.profile.quentaPath}`" download>Скачать</a>
-        <span v-else>Нет</span>
+        <div v-else>
+          Нет
+          <label class="btn btn-primary btn-sm" :for="'inputQuenta' + data.item.id">
+            <input :ref="'inputQuenta' + data.item.id" :id="'inputQuenta' + data.item.id" type="file" style="display: none;" @change="fileUpload(data.item.id)">
+            Загрузить
+          </label>
+        </div>
       </template>
       <template slot="actions" slot-scope="data">
         <b-button v-if="data.item.profile.isCitizen" size="sm" variant="danger" @click="setCitizen(data.item.id, false)">Выключить</b-button>
@@ -56,7 +62,8 @@ const namespace: string = 'master';
 export default class MasterUsers extends Vue {
   @State((state) => state.master.users) private users!: User[];
   @Getter('isUsersLoaded', { namespace }) private isLoaded!: boolean;
-  @Action('setBalance', { namespace }) private setBalanceAction!: ({data: SetBalance}) => Promise<void>;
+  @Action('setBalance', { namespace }) private setBalanceAction!: (data: {data: SetBalance}) => Promise<void>;
+  @Action('uploadQuenta', { namespace }) private uploadQuentaAction!: (data: {data: FormData}) => Promise<void>;
 
   private balanceEdit = {
     userId: 0,
@@ -115,6 +122,20 @@ export default class MasterUsers extends Vue {
       .then()
       .catch((err: any) => {
         this.showAlert('danger', `Ошибка при изменении баланса (${err.response.status})`);
+      });
+  }
+
+  private async fileUpload(id: number) {
+    const files = (this.$refs['inputQuenta' + id] as HTMLInputElement).files;
+    if (!files || !files[0]) return;
+
+    const data = new FormData();
+    data.append('quenta', files[0]);
+    data.append('userId', id.toString());
+    this.uploadQuentaAction({data})
+      .then()
+      .catch((err: any) => {
+        this.showAlert('danger', `Ошибка при загрузке квенты (${err.response.status})`);
       });
   }
 }

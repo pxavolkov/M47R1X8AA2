@@ -108,4 +108,8 @@ export class ProfileService {
   async setBalance(id: number, balance: number): Promise<void> {
     await this.profileRepository.update({userId: id}, {balance});
   }
+
+  async setQuentaPath(userId: number, quentaPath: string): Promise<void> {
+    await this.profileRepository.update({userId}, {quentaPath});
+  }
 }
