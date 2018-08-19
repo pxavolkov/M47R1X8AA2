@@ -72,7 +72,7 @@ export default class Profile extends Vue {
   @State((state) => state.profile.profile) private profile!: ProfileResponse | null;
   @Getter('isProfileLoaded', { namespace }) private isLoaded!: boolean;
   @Action('startMining', { namespace }) private startMiningAction!: () => Promise<{data: StartMiningResponse}>;
-  @Action('payRequired', { namespace }) private payRequired!: () => Promise<void>;
+  @Action('payRequired', { namespace: 'alert' }) private payRequired!: () => Promise<void>;
   private interval: number = -1;
   private miningTimeLeft: string = '';
 
