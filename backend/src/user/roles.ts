@@ -20,7 +20,7 @@ export class Roles extends Number {
 
 export class RolesTransformer implements ValueTransformer {
   to(value: Roles): number {
-    return Number(value);
+    return value ? Number(value) : 0;
   }
 
   from(value: number): Roles {
