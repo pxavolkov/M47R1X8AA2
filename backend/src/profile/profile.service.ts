@@ -17,9 +17,9 @@ export class ProfileService {
     private readonly transactionService: TransactionService,
   ) {}
 
-  async register(user: User, data: RegisterRequest, quentaPath: string): Promise<Profile> {
+  async register(userId: number, data: RegisterRequest, quentaPath: string): Promise<Profile> {
     const profile = new Profile();
-    profile.user = user;
+    profile.userId = userId;
     for (const k of ['firstName', 'lastName', 'sex', 'age']) profile[k] = data[k];
     profile.quentaPath = quentaPath;
     return await this.profileRepository.save(profile);
