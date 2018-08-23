@@ -9,7 +9,7 @@ export class News {
   @Column()
   title: string;
 
-  @Column()
+  @Column({length: 1000})
   text: string;
 
   @CreateDateColumn()
