@@ -43,18 +43,23 @@ export default {
         } else {
           sql = 'INSERT INTO ' + options.toTable + ' (' + newKeys.map(v => '`' + v  + '`').join(',') + ') VALUES (' + newKeys.map(() => '?').join(',') + ')';
         }
-        const result = await mysql.execute(
-          sql,
-          values
-        ) as any;
+        
+        try {
+          const result = await mysql.execute(
+            sql,
+            values
+          ) as any;
 
-        if (options.returnProps) {
-          returnData.push(options.returnProps.map(v => {
-            if (v.old) return row[v.name];
-            else if ('name' in v) return values[newKeys.indexOf(v.name)];
-            else if ('insertId' in v && v.insertId) return result[0].insertId;
-            else return null;
-          }));
+          if (options.returnProps) {
+            returnData.push(options.returnProps.map(v => {
+              if (v.old) return row[v.name];
+              else if ('name' in v) return values[newKeys.indexOf(v.name)];
+              else if ('insertId' in v && v.insertId) return result[0].insertId;
+              else return null;
+            }));
+          }
+        } catch (err) {
+          log.error(err);
         }
       }
       return returnData;
