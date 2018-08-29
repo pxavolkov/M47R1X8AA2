@@ -57,3 +57,12 @@ export class RegisterRequest {
     return validate(this, validatorOptions);
   }
 }
+
+export interface SendMessage {
+  userId: number;
+  text: string;
+}
+
+export interface LoadDialog {
+  userId: number;
+}

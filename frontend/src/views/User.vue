@@ -27,18 +27,14 @@
 
           <b-row v-for="(item, i) in filteredList" :key="i" style="border-top: 1px dashed #0098DA; display: flex; align-items: center;">
             <b-col cols="3">
-              <img v-if="item.photoUploaded" :src="photoPath(item.id)" class="avatar-small"/>
-              <div v-else class="avatar-small">
-                <div>^</div>
-                <div>^</div>
-              </div>
+              <SmallAvatar :id="item.id" :photoUploaded="item.photoUploaded"/>
             </b-col>
             <b-col cols="6" class="pb-2">
               <div class="green">{{ item.firstName }}</div>
               <div class="green">{{ item.lastName }}</div>
-              <button class="btn img-button p-0" @click="showMailAlert">
+              <router-link tag="button" class="btn img-button p-0" :to="`/Messages/${item.id}`" @click="showMailAlert">
                 <img title="Отправить сообщение" src="@/assets/img/mail.png"/>
-              </button>
+              </router-link>
             </b-col>
             <b-col cols="3" style="align-self: flex-end;">
               <button class="btn img-button" v-b-modal.transferModal @click="setTransfer(item)">
@@ -62,10 +58,11 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
 import { PublicProfile } from 'shared/responses';
 import axios from 'axios';
+import SmallAvatar from '@/components/SmallAvatar.vue';
 
 const namespace: string = 'profile';
 
-@Component
+@Component({components: {SmallAvatar}})
 export default class User extends Vue {
   @State((state) => state.profile.list) private list!: PublicProfile[];
   @Getter('isListLoaded', { namespace }) private isLoaded!: boolean;
@@ -94,10 +91,6 @@ export default class User extends Vue {
         lastName.toLowerCase().indexOf(this.search.toLowerCase()) > -1 ||
         `${firstName.toLowerCase()} ${lastName.toLowerCase()}`.indexOf(this.search.toLowerCase()) > -1));
     }
-  }
-
-  private photoPath(id: number) {
-    return '/api/photo/' + id + '.png';
   }
 
   private showAlert(type: string, text: string) {
@@ -148,16 +141,6 @@ export default class User extends Vue {
   .alert {
     margin: 0;
   }
-}
-
-.avatar-small {
-  border: 2px solid #0098DA;
-  border-radius: 10px;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px;
-  text-align: center;
-  width: 87px;
-  height: 87px;
 }
 
 .img-button {

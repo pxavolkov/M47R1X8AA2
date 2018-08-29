@@ -1,4 +1,4 @@
-import { ProfileResponse } from 'shared/responses';
+import { ProfileResponse, Message, PublicProfile } from 'shared/responses';
 import { User, News } from 'shared/master';
 
 export interface RootState {
@@ -44,4 +44,17 @@ export interface GeneratedMasterState {
     users: boolean,
     news: boolean,
   };
+}
+
+export interface MessageState {
+  messages: Messages;
+  users: Users;
+}
+
+export interface Users {
+  [key: number]: PublicProfile;
+}
+
+export interface Messages {
+  [key: number]: Message[];
 }

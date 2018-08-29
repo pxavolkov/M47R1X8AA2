@@ -17,7 +17,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(email: string, password: string, done: (error: Error, user: User | false) => void) {
-    const user = await this.userService.findOneByEmail(email);
+    const user = await this.userService.findOneByEmailWithProfile(email);
     if (!user) return done(new ForbiddenException(), false);
 
     if (user.passwordHash.startsWith('$2')) {

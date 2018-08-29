@@ -112,4 +112,11 @@ export class ProfileService {
   async setQuentaPath(userId: number, quentaPath: string): Promise<void> {
     await this.profileRepository.update({userId}, {quentaPath});
   }
+
+  async getPublicProfile(userId: number): Promise<Profile> {
+    return await this.profileRepository.findOneOrFail(
+      {userId},
+      {select: ['userId', 'firstName', 'lastName', 'photoUploaded']}
+    );
+  }
 }

@@ -15,6 +15,7 @@ import User from './views/User.vue';
 import NotFound from './views/NotFound.vue';
 import MasterUsers from './views/MasterUsers.vue';
 import MasterNews from './views/MasterNews.vue';
+import Messages from './views/Messages.vue';
 
 Vue.use(Router);
 
@@ -82,6 +83,13 @@ const router = new Router({
           path: '/User',
           name: 'User',
           component: User,
+          meta: {requiresAuth: true},
+        },
+        {
+          path: '/Messages/:userId',
+          name: 'Messages',
+          component: Messages,
+          props: true,
           meta: {requiresAuth: true},
         },
       ],

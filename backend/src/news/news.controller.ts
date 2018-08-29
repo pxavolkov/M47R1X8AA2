@@ -5,6 +5,7 @@ import { NewsService } from '../news/news.service';
 import { NewsResponse } from '@shared/responses';
 import { UserService } from '../user/user.service';
 import { ProfileService } from '../profile/profile.service';
+import { CitizenGuard } from '../auth/citizen.guard';
 
 @Controller('news')
 export class NewsController {
@@ -16,7 +17,7 @@ export class NewsController {
   ) {}
 
   @Get('load')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), new CitizenGuard())
   async load(@Request() {user}): Promise<NewsResponse> {
     if (!await this.profileService.isCitizen(user.id)) throw new ForbiddenException();
 

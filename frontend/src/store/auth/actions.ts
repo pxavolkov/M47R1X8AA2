@@ -3,6 +3,7 @@ import axios from 'axios';
 import { RootState, AuthState, AuthData } from '../types';
 import { LoginRequest } from 'shared/requests';
 import { LoginResponse } from 'shared/responses';
+import { connect, disconnect } from '@/socket';
 
 export const actions: ActionTree<AuthState, RootState> = {
   async login({ commit }, data: LoginRequest) {
@@ -18,6 +19,7 @@ export const actions: ActionTree<AuthState, RootState> = {
       };
       localStorage.setItem('auth', JSON.stringify(auth));
       commit('loginSuccess', auth);
+      connect(auth.token);
     } catch (err) {
       if (err.response.status === 403) commit('loginFailure', 'Неверный email или пароль');
       else commit('loginFailure', `Неизвестная ошибка (${err.response.status})`);
@@ -26,5 +28,6 @@ export const actions: ActionTree<AuthState, RootState> = {
   logout({ commit }) {
     localStorage.removeItem('auth');
     commit('logout');
+    disconnect();
   },
 };

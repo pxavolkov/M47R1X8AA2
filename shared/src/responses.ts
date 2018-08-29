@@ -42,3 +42,16 @@ export class StartMiningResponse {
   public miningEndTime: number = 0;
   public miningAmount: number = 0;
 }
+
+export interface Dialog {
+  messages: Message[];
+  users: PublicProfile[];
+}
+
+export interface Message {
+  id: number;
+  fromUserId: number;
+  toUserId: number;
+  text: string;
+  date: Date | string;
+}

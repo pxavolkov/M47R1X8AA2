@@ -8,6 +8,7 @@ import { ProfileService } from './profile.service';
 import { NewsService } from '../news/news.service';
 import { ProfileResponse, PublicProfile, StartMiningResponse } from '@shared/responses';
 import paths from '../paths';
+import { CitizenGuard } from 'auth/citizen.guard';
 
 @Controller('profile')
 export class ProfileController {
@@ -90,10 +91,8 @@ export class ProfileController {
   }
 
   @Post('startMining')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), new CitizenGuard())
   async startMining(@Request() {user}): Promise<StartMiningResponse> {
-    if (!await this.profileService.isCitizen(user.id)) throw new ForbiddenException();
-
     const miningTime = await this.profileService.getMiningTime(user.id);
     if (!miningTime) {
       await this.profileService.startMining(user.id);

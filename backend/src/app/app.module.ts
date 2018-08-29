@@ -12,6 +12,7 @@ import { ProfileModule } from '../profile/profile.module';
 import { GiftModule } from '../gift/gift.module';
 import { TransactionModule } from '../transaction/transaction.module';
 import { MasterModule } from '../master/master.module';
+import { MessageModule } from '../message/message.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { MasterModule } from '../master/master.module';
     TransactionModule,
     GiftModule,
     MasterModule,
+    MessageModule,
   ],
   controllers: [AppController],
 })
