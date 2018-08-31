@@ -32,9 +32,9 @@
             <b-col cols="6" class="pb-2">
               <div class="green">{{ item.firstName }}</div>
               <div class="green">{{ item.lastName }}</div>
-              <router-link tag="button" class="btn img-button p-0" :to="`/Messages/${item.id}`" @click="showMailAlert">
+              <button tag="button" class="btn img-button p-0" @click="showMailAlert">
                 <img title="Отправить сообщение" src="@/assets/img/mail.png"/>
-              </router-link>
+              </button>
             </b-col>
             <b-col cols="3" style="align-self: flex-end;">
               <button class="btn img-button" v-b-modal.transferModal @click="setTransfer(item)">

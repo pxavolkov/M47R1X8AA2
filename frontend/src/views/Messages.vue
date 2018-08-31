@@ -38,7 +38,6 @@ export default class Messages extends Vue { // TODO
 
   public created() {
     this.$store.dispatch(`${namespace}/loadDialog`, {userId: this.userId});
-    // this.$store.dispatch(`${namespace}/loadDialog`, {params: {userId: this.userId}});
   }
 
   private async sendMessage() {
