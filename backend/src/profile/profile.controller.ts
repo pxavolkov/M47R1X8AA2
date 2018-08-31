@@ -8,7 +8,7 @@ import { ProfileService } from './profile.service';
 import { NewsService } from '../news/news.service';
 import { ProfileResponse, PublicProfile, StartMiningResponse } from '@shared/responses';
 import paths from '../paths';
-import { CitizenGuard } from 'auth/citizen.guard';
+import { CitizenGuard } from '../auth/citizen.guard';
 
 @Controller('profile')
 export class ProfileController {
