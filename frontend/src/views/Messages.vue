@@ -6,7 +6,7 @@
     <b-form-input v-if="false" v-model="text1" class="my-1" type="text" placeholder="Введите сообщение"></b-form-input>
     <b-form-textarea v-if="false" v-model="text" class="my-1" placeholder="Введите сообщение" :rows="1" :max-rows="6" style="resize: none;"></b-form-textarea>
     <b-input-group class="my-1 message-input">
-      <b-form-textarea v-model="text" placeholder="Введите сообщение" :rows="1" :max-rows="6" style="resize: none;"></b-form-textarea>
+      <textarea v-model="text" class="form-control" placeholder="Введите сообщение" :rows="rows" style="resize: none;" @keyup.enter.prevent="onEnter"></textarea>
       <b-btn slot="append" variant="primary" @click="sendMessage()" :disabled="sending">Отправить</b-btn>
     </b-input-group>
     <div class="text-center">
@@ -25,6 +25,7 @@ import { Users } from '@/store/types';
 import socket from '@/socket';
 
 const namespace: string = 'message';
+const maxRows = 6;
 
 @Component({components: {MessageItem}})
 export default class Messages extends Vue { // TODO
@@ -42,13 +43,29 @@ export default class Messages extends Vue { // TODO
 
   private async sendMessage() {
     this.sending = true;
+    this.text.trim();
     await this.sendMessageAction({userId: parseInt(this.userId, 10), text: this.text});
     this.sending = false;
     this.text = '';
   }
 
+  private onEnter(e: KeyboardEvent) {
+    if (e.ctrlKey) this.appendNewline();
+    else this.sendMessage();
+    e.preventDefault();
+    return false;
+  }
+
+  private appendNewline() {
+    this.text += '\n';
+  }
+
   private get messages() {
     return this.$store.state.message.messages[this.userId] || [];
+  }
+
+  private get rows() {
+    return Math.min(this.text.split(/\r\n|\r|\n/).length, maxRows);
   }
 }
 </script>
