@@ -1,13 +1,15 @@
-import { join } from 'path';
+import { join, resolve } from 'path';
+import { register } from 'tsconfig-paths';
+import tsConfig from '../tsconfig.json';
 
 const production = process.env.NODE_ENV === 'production';
 const base = join(__dirname + (production ? '/../../..' : '/..'));
 
-if (production) {
-  // tslint:disable-next-line
-  const moduleAlias = require('module-alias')
-  moduleAlias.addAlias('@shared', base + '/dist/shared/src');
-}
+const baseUrl = resolve(__dirname, '..', tsConfig.compilerOptions.baseUrl);
+register({
+  baseUrl,
+  paths: tsConfig.compilerOptions.paths
+});
 
 export default {
   base,

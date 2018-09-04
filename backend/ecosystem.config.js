@@ -1,7 +1,8 @@
 module.exports = {
   apps : [{
     name      : 'API',
-    script    : 'dist/backend/src/main.js',
+    script    : 'npm',
+    args      : 'run prod',
     env: {
       NODE_ENV: 'production'
     }
