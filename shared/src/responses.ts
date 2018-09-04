@@ -19,6 +19,7 @@ export class ProfileResponse {
   public miningEndTime: number | null = null;
   public miningAmount: number = 0;
   public unreadNews: number = 0;
+  public unreadMessages: number = 0;
 }
 
 export class News {
@@ -36,6 +37,7 @@ export class PublicProfile {
   public firstName: string = '';
   public lastName: string = '';
   public photoUploaded: boolean = false;
+  public unreadMessages: number = 0;
 }
 
 export class StartMiningResponse {

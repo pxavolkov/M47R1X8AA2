@@ -59,6 +59,7 @@ export class MessageGateway implements OnGatewayInit {
   @SubscribeMessage('loadDialog')
   async loadDialog({user}, [{userId}, cb]): Promise<void> {
     const messages = await this.messageService.getDialog(user.id, userId);
+    await this.messageService.markDialogAsRead(userId, user.id);
     const user2 = await this.profileService.getPublicProfile(userId);
     const users = [{
       id: user.id,

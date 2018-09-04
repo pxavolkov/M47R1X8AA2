@@ -23,4 +23,7 @@ export class Message {
 
   @CreateDateColumn()
   date: Date;
+
+  @Column({default: false})
+  read: boolean;
 }

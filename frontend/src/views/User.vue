@@ -34,6 +34,7 @@
               <div class="green">{{ item.lastName }}</div>
               <button tag="button" class="btn img-button p-0" @click="showMailAlert">
                 <img title="Отправить сообщение" src="@/assets/img/mail.png"/>
+                <NumberBadge class="messagesCount" :value="item.unreadMessages"/>
               </button>
             </b-col>
             <b-col cols="3" style="align-self: flex-end;">
@@ -59,10 +60,11 @@ import { State, Action, Getter } from 'vuex-class';
 import { PublicProfile } from 'shared/responses';
 import axios from 'axios';
 import SmallAvatar from '@/components/SmallAvatar.vue';
+import NumberBadge from '@/components/NumberBadge.vue';
 
 const namespace: string = 'profile';
 
-@Component({components: {SmallAvatar}})
+@Component({components: {SmallAvatar, NumberBadge}})
 export default class User extends Vue {
   @State((state) => state.profile.list) private list!: PublicProfile[];
   @Getter('isListLoaded', { namespace }) private isLoaded!: boolean;
@@ -167,5 +169,11 @@ button.close {
 .form-row div {
   display: flex;
   align-items: center;
+}
+
+.messagesCount {
+  position: relative;
+  right: 23px;
+  top: -8px;
 }
 </style>

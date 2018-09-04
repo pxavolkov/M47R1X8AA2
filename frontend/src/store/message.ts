@@ -26,7 +26,7 @@ const mutations: MutationTree<MessageState> = {
     state.messages[data.toUserId].push(data);
   },
   addUsers(state, data) {
-    for(const user of data) Vue.set(state.users, user.id, user);
+    for (const user of data) Vue.set(state.users, user.id, user);
   },
 };
 
@@ -58,45 +58,3 @@ export const message: Module<MessageState, RootState> = {
     mutations,
     actions,
 };
-
-/*
-import Vapi from 'vuex-rest-api';
-import { MessagesState, Users } from '@/store/types';
-import { Dialog, Message } from 'shared/responses';
-import { SendMessage } from 'shared/requests';
-
-const message = new Vapi({
-    baseURL: '/api/message',
-    state: {
-      messages: [],
-      users: {},
-    },
-  })
-  .get({
-    action: 'loadDialog',
-    property: 'dialog',
-    path: '/loadDialog',
-    queryParams: true,
-    onSuccess: (state: MessagesState, payload: {data: Dialog}) => {
-      state.messages = payload.data.messages;
-      const users: Users = {};
-      for (const user of payload.data.users) users[user.id] = user;
-      state.users = users;
-    },
-  })
-  .post({
-    action: 'sendMessage',
-    path: '/sendMessage',
-    onSuccess: (state: MessagesState, payload: {data: Message}) => {
-      state.messages.push(payload.data);
-    },
-  })
-  .getStore();
-
-const getters = {
-};
-
-Object.assign(message, {getters});
-
-export {message};
-*/

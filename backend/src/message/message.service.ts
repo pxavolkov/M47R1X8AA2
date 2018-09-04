@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, Not } from 'typeorm';
 import { Message } from './message.entity';
 
 @Injectable()
@@ -22,5 +22,29 @@ export class MessageService {
 
   async add(message: Message): Promise<Message> {
     return await this.messageRepository.save(message);
+  }
+
+  async unreadCountByUserId(id: number): Promise<number> {
+    return await this.messageRepository.count({
+      where: {fromUserId: Not(id), toUserId: id, read: false}
+    });
+  }
+
+  async unreadCountByDialogs(toUserId: number): Promise<any[]> {
+    return (await this.messageRepository
+      .createQueryBuilder()
+      .select('fromUserId')
+      .addSelect('COUNT(*) as count')
+      .where('toUserId = :toUserId', {toUserId})
+      .andWhere('`read` = 0')
+      .groupBy('fromUserId')
+      .getRawMany()).map(({fromUserId, count}) => ({
+        fromUserId,
+        count: parseInt(count, 10),
+      }));
+  }
+
+  async markDialogAsRead(fromUserId: number, toUserId: number): Promise<void> {
+    await this.messageRepository.update({fromUserId, toUserId, read: false}, {read: true});
   }
 }

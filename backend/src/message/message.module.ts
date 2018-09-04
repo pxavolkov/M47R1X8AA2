@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Message } from './message.entity';
 import { ProfileModule } from '../profile/profile.module';
@@ -7,7 +7,7 @@ import { MessageGateway } from './message.gateway';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Message]), ProfileModule, AuthModule],
+  imports: [TypeOrmModule.forFeature([Message]), forwardRef(() => ProfileModule), forwardRef(() => AuthModule)],
   providers: [MessageService, MessageGateway],
   exports: [MessageService],
 })
