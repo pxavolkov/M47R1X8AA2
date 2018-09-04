@@ -12,6 +12,7 @@ export const messageState: MessageState = {
 
 const mutations: MutationTree<MessageState> = {
   SOCKET_CONNECT(state, status) {
+    // tslint:disable-next-line:no-console
     console.log('socket connected');
   },
   SOCKET_MESSAGE(state, data) {
