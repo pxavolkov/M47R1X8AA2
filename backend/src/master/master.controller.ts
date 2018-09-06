@@ -1,5 +1,5 @@
 import { Controller, Get, UseGuards, Body, Post, UseInterceptors, FileInterceptor, UploadedFile, BadRequestException,
-  UnprocessableEntityException, InternalServerErrorException } from '@nestjs/common';
+  UnprocessableEntityException, InternalServerErrorException, Query } from '@nestjs/common';
 import { Logger } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
@@ -10,9 +10,13 @@ import { NewsService } from '../news/news.service';
 import { ProfileService } from '../profile/profile.service';
 import { News } from '../news/news.entity';
 import paths from '../paths';
-import { SetBalance, SetCitizen, UploadQuenta } from '@shared/master';
+import { SetBalance, SetCitizen, UploadQuenta, RemovedItem } from '@shared/master';
 import { unlink, rename } from 'fs';
 import * as mkdirp from 'mkdirp';
+import { ItemService } from '../item/item.service';
+import { Item } from '../item/item.entity';
+import { InventoryService } from '../inventory/inventory.service';
+import { InventoryItem } from '../inventory/inventory.entity';
 
 @Controller('master')
 @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.Master))
@@ -22,6 +26,8 @@ export class MasterController {
     private readonly userService: UserService,
     private readonly newsService: NewsService,
     private readonly profileService: ProfileService,
+    private readonly itemService: ItemService,
+    private readonly inventoryService: InventoryService,
   ) {}
 
   @Get('users')
@@ -32,6 +38,16 @@ export class MasterController {
   @Get('news')
   async news(): Promise<any> {
     return this.newsService.all();
+  }
+
+  @Get('items')
+  async items(): Promise<any> {
+    return this.itemService.all();
+  }
+
+  @Get('loadInventory')
+  async loadInventory(@Query('userId') userId): Promise<InventoryItem[]> {
+    return await this.inventoryService.getUserInventory(userId);
   }
 
   @Post('setCitizen')
@@ -49,6 +65,56 @@ export class MasterController {
   @Post('addNews')
   async addNews(@Body() data): Promise<News> {
     return await this.newsService.add(data);
+  }
+
+  @Post('updateItem')
+  @UseInterceptors(FileInterceptor('icon', {dest: paths.upload}))
+  async updateItem(@Body() data, @UploadedFile() icon): Promise<any> {
+    data.id = parseInt(data.id, 10);
+    if (icon) {
+      try {
+        await new Promise((resolve, reject) => mkdirp(paths.item, (err) => !err ? resolve() : reject(err)));
+        await new Promise((resolve, reject) => {
+          rename(icon.path, paths.item + '/' + data.id + '.png', (err) => !err ? resolve() : reject(err));
+        });
+        this.logger.log('icon: Rename completed!');
+      } catch (err) {
+        this.logger.error(`Failed to move icon file(${icon.filename}, ${icon.originalname}): `, err.stack);
+        unlink(icon.path, (err) => {
+          if (!err) this.logger.log(`File removed: icon: ${icon.originalname}`);
+          else this.logger.error(`Error removing file: icon: ${icon.originalname}: ${err.stack || err.message}`);
+        });
+        throw new UnprocessableEntityException();
+      }
+    }
+    const {id, ...values} = data;
+    await this.itemService.update(id, values);
+    return data;
+  }
+
+  @Post('addItem')
+  @UseInterceptors(FileInterceptor('icon', {dest: paths.upload}))
+  async addItem(@Body() data, @UploadedFile() icon): Promise<Item> {
+    if (icon) this.logger.log(`File uploaded: icon: ${icon.originalname}`);
+    else throw new BadRequestException();
+
+    const item = await this.itemService.add(data);
+    try {
+      await new Promise((resolve, reject) => mkdirp(paths.item, (err) => !err ? resolve() : reject(err)));
+      await new Promise((resolve, reject) => {
+        rename(icon.path, paths.item + '/' + item.id + '.png', (err) => !err ? resolve() : reject(err));
+      });
+      this.logger.log('icon: Rename completed!');
+    } catch (err) {
+      this.logger.error(`Failed to move item icon file(${icon.filename}, ${icon.originalname}): `, err.stack);
+      unlink(icon.path, (err) => {
+        if (!err) this.logger.log(`File removed: icon: ${icon.originalname}`);
+        else this.logger.error(`Error removing file: icon: ${icon.originalname}: ${err.stack || err.message}`);
+      });
+      throw new UnprocessableEntityException();
+    }
+
+    return item;
   }
 
   @Post('setBalance')
@@ -91,5 +157,21 @@ export class MasterController {
       });
       throw new InternalServerErrorException();
     }
+  }
+
+  @Post('giveItem')
+  async giveItem(@Body() data): Promise<InventoryItem> {
+    await this.inventoryService.addItem(data.userId, data.itemId, data.amount);
+    return await this.inventoryService.getUserInventoryItem(data.userId, data.itemId);
+  }
+
+  @Post('takeItem')
+  async takeItem(@Body() data): Promise<RemovedItem> {
+    await this.inventoryService.removeItem(data.userId, data.itemId, data.amount);
+    const item = await this.inventoryService.getInventoryItemAmount(data.userId, data.itemId);
+    return {
+      itemId: data.itemId,
+      amount: item ? item.amount : 0,
+    };
   }
 }

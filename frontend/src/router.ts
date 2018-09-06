@@ -16,6 +16,8 @@ import NotFound from './views/NotFound.vue';
 import MasterUsers from './views/MasterUsers.vue';
 import MasterNews from './views/MasterNews.vue';
 import Messages from './views/Messages.vue';
+import MasterItems from './views/MasterItems.vue';
+import Inventory from './views/Inventory.vue';
 
 Vue.use(Router);
 
@@ -92,6 +94,12 @@ const router = new Router({
           props: true,
           meta: {requiresAuth: true},
         },
+        {
+          path: '/Inventory',
+          name: 'Inventory',
+          component: Inventory,
+          meta: {requiresAuth: true},
+        },
       ],
     },
     {
@@ -110,6 +118,19 @@ const router = new Router({
           path: 'News',
           name: 'MasterNews',
           component: MasterNews,
+          meta: {requiresAuth: true},
+        },
+        {
+          path: 'Items',
+          name: 'MasterItems',
+          component: MasterItems,
+          meta: {requiresAuth: true},
+        },
+        {
+          path: 'Inventory/:id',
+          name: 'MasterInventory',
+          component: Inventory,
+          props: true,
           meta: {requiresAuth: true},
         },
       ],

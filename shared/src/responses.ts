@@ -57,3 +57,17 @@ export interface Message {
   text: string;
   date: Date | string;
 }
+
+export interface InventoryItem {
+  userId: number;
+  itemId: number;
+  amount: number;
+  item: Item;
+}
+
+export interface Item {
+  id: number;
+  title: string;
+  shortDesc: string;
+  longDesc: string;
+}

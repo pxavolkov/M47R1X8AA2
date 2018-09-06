@@ -1,6 +1,6 @@
 import { join, resolve } from 'path';
 import { register } from 'tsconfig-paths';
-import tsConfig from '../tsconfig.json';
+import * as tsConfig from '../tsconfig.json';
 
 const production = process.env.NODE_ENV === 'production';
 const base = join(__dirname + (production ? '/../../..' : '/..'));
@@ -18,4 +18,5 @@ export default {
   public: join(base + '/public'),
   photo: join(base + '/public/photo'),
   quenta: join(base + '/public/quenta'),
+  item: join(base + '/public/item'),
 };

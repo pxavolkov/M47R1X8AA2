@@ -1,5 +1,5 @@
-import { ProfileResponse, Message, PublicProfile } from 'shared/responses';
-import { User, News } from 'shared/master';
+import { Message, PublicProfile, InventoryItem } from 'shared/responses';
+import { User, News, Item } from 'shared/master';
 
 export interface RootState {
   version: string;
@@ -33,16 +33,22 @@ export interface AlertState {
 export interface MasterState {
   users: User[];
   news: News[];
+  items: Item[];
+  inventory: InventoryItem[];
 }
 
 export interface GeneratedMasterState {
   pending: {
     users: boolean,
     news: boolean,
+    items: boolean,
+    inventory: boolean,
   };
   error: {
     users: boolean,
     news: boolean,
+    items: boolean,
+    inventory: boolean,
   };
 }
 

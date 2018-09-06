@@ -44,6 +44,8 @@
       <template slot="actions" slot-scope="data">
         <b-button v-if="data.item.profile.isCitizen" size="sm" variant="danger" @click="setCitizen(data.item.id, false)">Выключить</b-button>
         <b-button v-else size="sm" variant="success" @click="setCitizen(data.item.id, true)">Включить</b-button>
+        <br>
+        <b-button class="mt-1" size="sm" variant="primary" :to="'Inventory/' + data.item.id">Инвентарь</b-button>
       </template>
     </b-table>
   </div>

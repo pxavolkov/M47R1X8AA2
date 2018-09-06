@@ -40,3 +40,21 @@ export interface UploadQuenta {
   userId: number;
   quentaPath: string;
 }
+
+export interface Item {
+  id: number;
+  title: string;
+  shortDesc: string;
+  longDesc: string;
+}
+
+export interface RemovedItem {
+  itemId: number;
+  amount: number;
+}
+
+export interface InventoryItemData {
+  userId: number;
+  itemId: number;
+  amount: number;
+}

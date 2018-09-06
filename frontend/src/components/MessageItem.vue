@@ -14,7 +14,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import SmallAvatar from '@/components/SmallAvatar.vue';
-import escape from 'escape-html';
+import utils from '@/utils';
 
 @Component({components: {SmallAvatar}})
 export default class MessageItem extends Vue {
@@ -28,7 +28,7 @@ export default class MessageItem extends Vue {
   }
 
   get formattedMessage(): string {
-    return escape(this.message.text).replace(/(?:\r\n|\r|\n)/g, '<br/>');
+    return utils.nl2br(this.message.text);
   }
 }
 </script>

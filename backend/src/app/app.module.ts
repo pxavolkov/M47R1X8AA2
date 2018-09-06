@@ -13,6 +13,8 @@ import { GiftModule } from '../gift/gift.module';
 import { TransactionModule } from '../transaction/transaction.module';
 import { MasterModule } from '../master/master.module';
 import { MessageModule } from '../message/message.module';
+import { ItemModule } from '../item/item.module';
+import { InventoryModule } from '../inventory/inventory.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { MessageModule } from '../message/message.module';
     GiftModule,
     MasterModule,
     MessageModule,
+    ItemModule,
+    InventoryModule,
   ],
   controllers: [AppController],
 })
