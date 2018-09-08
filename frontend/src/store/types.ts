@@ -64,3 +64,7 @@ export interface Users {
 export interface Messages {
   [key: number]: Message[];
 }
+
+export interface InventoryState {
+  items: InventoryItem[];
+}

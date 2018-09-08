@@ -71,3 +71,8 @@ export interface Item {
   shortDesc: string;
   longDesc: string;
 }
+
+export interface InventoryItemAmount {
+  itemId: number;
+  amount: number;
+}

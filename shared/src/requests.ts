@@ -66,3 +66,14 @@ export interface SendMessage {
 export interface LoadDialog {
   userId: number;
 }
+
+export interface TransferMoney {
+  userId: number;
+  amount: number;
+}
+
+export interface TransferItem {
+  userId: number;
+  itemId: number;
+  amount: number;
+}

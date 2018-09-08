@@ -1,7 +1,7 @@
 import Vapi from 'vuex-rest-api';
 import { MasterState, GeneratedMasterState } from '@/store/types';
-import { SetCitizen, News, SetBalance, UploadQuenta, Item, RemovedItem } from 'shared/master';
-import { InventoryItem } from 'shared/responses';
+import { SetCitizen, News, SetBalance, UploadQuenta, Item } from 'shared/master';
+import { InventoryItem, InventoryItemAmount } from 'shared/responses';
 import Vue from 'vue';
 
 const master = new Vapi({
@@ -109,19 +109,14 @@ const master = new Vapi({
     path: '/giveItem',
     onSuccess: (state: MasterState, payload: {data: InventoryItem}) => {
       const index = state.inventory.findIndex((v) => v.itemId === payload.data.itemId);
-      console.log('giveItem: ', index);
-      if (index !== -1) {
-        const item = Object.assign({}, state.inventory[index], {amount: payload.data.amount});
-        console.log(item);
-        Vue.set(state.inventory, index, item);
-        console.log(state.inventory[index]);
-      } else state.inventory.push(payload.data);
+      if (index !== -1) Vue.set(state.inventory[index], 'amount', payload.data.amount);
+      else state.inventory.push(payload.data);
     },
   })
   .post({
     action: 'takeItem',
     path: '/takeItem',
-    onSuccess: (state: MasterState, payload: {data: RemovedItem}) => {
+    onSuccess: (state: MasterState, payload: {data: InventoryItemAmount}) => {
       const index = state.inventory.findIndex((v) => v.itemId === payload.data.itemId);
       if (index !== -1) {
         if (payload.data.amount <= 0) state.inventory.splice(index, 1);

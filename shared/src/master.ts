@@ -48,11 +48,6 @@ export interface Item {
   longDesc: string;
 }
 
-export interface RemovedItem {
-  itemId: number;
-  amount: number;
-}
-
 export interface InventoryItemData {
   userId: number;
   itemId: number;

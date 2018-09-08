@@ -59,7 +59,6 @@ export class InventoryService {
 
     const invItem = await invRepository.findOneOrFail({userId, itemId});
     if (invItem.amount < amount) {
-      // console.log();
       throw new BadRequestException();
     } else if (invItem.amount === amount) invRepository.remove(invItem);
     else {
@@ -74,6 +73,6 @@ export class InventoryService {
     @TransactionRepository(InventoryItem) invRepository?: Repository<InventoryItem>
   ) {
     await this.removeItem(fromUserId, itemId, amount, invRepository);
-    await this.addItem(fromUserId, itemId, amount, invRepository);
+    await this.addItem(toUserId, itemId, amount, invRepository);
   }
 }

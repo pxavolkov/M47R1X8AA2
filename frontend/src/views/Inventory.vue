@@ -7,10 +7,10 @@
 
     <div class="inventory-container">
       <b-modal v-if="isMaster" id="giveItemModal" size="sm" hide-header ok-variant="success" ok-title="Выдать предмет" cancel-title="Отмена" @ok="giveItem()">
-        <b-form-group label="Количество" label-for="inputGiveItemId">
+        <b-form-group label="Предмет:" label-for="inputGiveItemId">
           <b-form-select id="inputGiveItemId" v-model="selectedGiveItemId" :options="giveItemOptions" class="mb-3" />
         </b-form-group>
-        <b-form-group label="Количество" label-for="inputGiveItemAmount">
+        <b-form-group label="Количество:" label-for="inputGiveItemAmount">
           <b-form-input id="inputGiveItemAmount" v-model.number="giveItemAmount"></b-form-input>
         </b-form-group>
       </b-modal>

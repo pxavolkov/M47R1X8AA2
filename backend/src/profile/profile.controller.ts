@@ -10,6 +10,7 @@ import { ProfileResponse, PublicProfile, StartMiningResponse } from '@shared/res
 import paths from '../paths';
 import { CitizenGuard } from '../auth/citizen.guard';
 import { MessageService } from 'message/message.service';
+import { TransferMoney } from '@shared/requests';
 
 const objectify = (obj, [k, v]) => ({ ...obj, [k]: v });
 
@@ -71,13 +72,12 @@ export class ProfileController {
 
   @Post('transfer')
   @UseGuards(AuthGuard('jwt'))
-  async transfer(@Request() {user}, @Body() data): Promise<'success'> {
-    const amount = parseInt(data.amount, 10);
-    if (!(amount > 0)) throw new BadRequestException();
+  async transfer(@Request() {user}, @Body() data: TransferMoney): Promise<'success'> {
+    if (!(data.amount > 0)) throw new BadRequestException();
 
     const balance = await this.profileService.getBalance(user.id);
-    if (balance >= amount) {
-      await this.profileService.transfer(user.id, data.userId, amount);
+    if (balance >= data.amount) {
+      await this.profileService.transfer(user.id, data.userId, data.amount);
       return 'success';
     } else throw new ForbiddenException();
   }

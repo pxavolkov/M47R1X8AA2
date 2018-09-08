@@ -1,9 +1,11 @@
-import { Controller, Get, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, UseGuards, Request, Post, Body, BadRequestException } from '@nestjs/common';
 import { Logger } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CitizenGuard } from '../auth/citizen.guard';
 import { InventoryService } from './inventory.service';
 import { InventoryItem } from './inventory.entity';
+import { TransferItem } from '@shared/requests';
+import { InventoryItemAmount } from '@shared/responses';
 
 @Controller('inventory')
 export class InventoryController {
@@ -16,5 +18,18 @@ export class InventoryController {
   @UseGuards(AuthGuard('jwt'), new CitizenGuard())
   async load(@Request() {user}): Promise<InventoryItem[]> {
     return await this.inventoryService.getUserInventory(user.id);
+  }
+
+  @Post('transfer')
+  @UseGuards(AuthGuard('jwt'))
+  async transfer(@Request() {user}, @Body() data: TransferItem): Promise<InventoryItemAmount> {
+    if (!(data.amount > 0)) throw new BadRequestException();
+
+    await this.inventoryService.transferItem(user.id, data.userId, data.itemId, data.amount);
+    const item = await this.inventoryService.getInventoryItemAmount(user.id, data.itemId);
+    return {
+      itemId: data.itemId,
+      amount: item ? item.amount : 0,
+    };
   }
 }
