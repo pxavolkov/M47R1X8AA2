@@ -10,13 +10,15 @@ import { NewsService } from '../news/news.service';
 import { ProfileService } from '../profile/profile.service';
 import { News } from '../news/news.entity';
 import paths from '../paths';
-import { SetBalance, SetCitizen, UploadQuenta, RemovedItem } from '@shared/master';
+import { SetBalance, SetCitizen, UploadQuenta, SendMultiMessage } from '@shared/master';
 import { unlink, rename } from 'fs';
 import * as mkdirp from 'mkdirp';
 import { ItemService } from '../item/item.service';
 import { Item } from '../item/item.entity';
 import { InventoryService } from '../inventory/inventory.service';
 import { InventoryItem } from '../inventory/inventory.entity';
+import { InventoryItemAmount } from '@shared/responses';
+import { MessageService } from '../message/message.service';
 
 @Controller('master')
 @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.Master))
@@ -28,6 +30,7 @@ export class MasterController {
     private readonly profileService: ProfileService,
     private readonly itemService: ItemService,
     private readonly inventoryService: InventoryService,
+    private readonly messageService: MessageService,
   ) {}
 
   @Get('users')
@@ -166,12 +169,17 @@ export class MasterController {
   }
 
   @Post('takeItem')
-  async takeItem(@Body() data): Promise<RemovedItem> {
+  async takeItem(@Body() data): Promise<InventoryItemAmount> {
     await this.inventoryService.removeItem(data.userId, data.itemId, data.amount);
     const item = await this.inventoryService.getInventoryItemAmount(data.userId, data.itemId);
     return {
       itemId: data.itemId,
       amount: item ? item.amount : 0,
     };
+  }
+
+  @Post('sendMultiMessage')
+  async sendMultiMessage(@Body() data: SendMultiMessage): Promise<void> {
+    for (const id of data.userIds) await this.messageService.sendNotification(id, data.text);
   }
 }

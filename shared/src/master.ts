@@ -53,3 +53,8 @@ export interface InventoryItemData {
   itemId: number;
   amount: number;
 }
+
+export interface SendMultiMessage {
+  userIds: number[];
+  text: string;
+}

@@ -124,6 +124,10 @@ const master = new Vapi({
       }
     },
   })
+  .post({
+    action: 'sendMultiMessage',
+    path: '/sendMultiMessage',
+  })
   .getStore();
 
 const getters = {

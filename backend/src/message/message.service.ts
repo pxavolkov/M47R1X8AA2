@@ -6,6 +6,7 @@ import { Message } from './message.entity';
 @Injectable()
 export class MessageService {
   private readonly logger = new Logger(MessageService.name);
+  private readonly notificationUserId = parseInt(process.env.NOTIFICATION_USER_ID, 10);
   constructor(
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
@@ -46,5 +47,13 @@ export class MessageService {
 
   async markDialogAsRead(fromUserId: number, toUserId: number): Promise<void> {
     await this.messageRepository.update({fromUserId, toUserId, read: false}, {read: true});
+  }
+
+  async sendNotification(userId: number, text: string): Promise<Message> {
+    const msg = new Message();
+    msg.fromUserId = this.notificationUserId;
+    msg.toUserId = userId;
+    msg.text = text;
+    return await this.messageRepository.save(msg);
   }
 }
