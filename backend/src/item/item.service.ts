@@ -25,4 +25,8 @@ export class ItemService {
     item.longDesc = data.longDesc;
     return await this.itemRepository.save(item);
   }
+
+  async getById(id: number): Promise<Item> {
+    return await this.itemRepository.findOneOrFail(id);
+  }
 }

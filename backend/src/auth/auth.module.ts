@@ -5,9 +5,10 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { LocalStrategy } from './local.strategy';
 import { SocketAuthMiddleware } from './socket-auth.middleware';
+import { EventModule } from '../event/event.module';
 
 @Module({
-  imports: [forwardRef(() => UserModule)],
+  imports: [forwardRef(() => UserModule), EventModule],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, LocalStrategy, SocketAuthMiddleware],
   exports: [AuthService, SocketAuthMiddleware],

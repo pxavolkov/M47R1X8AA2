@@ -30,4 +30,8 @@ export class NewsService {
   async add(data: News): Promise<News> {
     return await this.newsRepository.save(data);
   }
+
+  async getById(id: number): Promise<News> {
+    return await this.newsRepository.findOneOrFail(id);
+  }
 }

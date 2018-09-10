@@ -10,6 +10,7 @@ import { User } from './user.entity';
 import { UserService } from './user.service';
 import { NewsService } from '../news/news.service';
 import paths from '../paths';
+import utils from '../utils';
 
 @Controller('user')
 export class UserController {
@@ -58,10 +59,8 @@ export class UserController {
       try {
         if (quenta) {
           const newPath = paths.quenta + '/' + user.id;
-          await new Promise((resolve, reject) => mkdirp(newPath, (err) => !err ? resolve() : reject(err)));
-          await new Promise((resolve, reject) => {
-            rename(quenta.path, newPath + '/' + quenta.originalname, (err) => !err ? resolve() : reject(err));
-          });
+          await utils.mkdirp(newPath);
+          await utils.rename(quenta.path, newPath + '/' + quenta.originalname);
           success = true;
           this.logger.log('quenta: Rename completed!');
         }
@@ -74,10 +73,12 @@ export class UserController {
       return 'success';
     } finally {
       if (quenta && !success) {
-        unlink(quenta.path, (err) => {
-          if (!err) this.logger.log(`File removed: quenta: ${quenta.originalname}`);
-          else this.logger.error(`Error removing file: quenta: ${quenta.originalname}: ${err.stack || err.message}`);
-        });
+        try {
+          await utils.unlink(quenta.path);
+          this.logger.log(`File removed: quenta: ${quenta.originalname}`);
+        } catch (err) {
+          this.logger.error(`Error removing file: quenta: ${quenta.originalname}: ${err.stack || err.message}`);
+        }
       }
     }
   }

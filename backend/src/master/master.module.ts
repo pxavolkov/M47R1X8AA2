@@ -6,9 +6,10 @@ import { ProfileModule } from '../profile/profile.module';
 import { ItemModule } from '../item/item.module';
 import { InventoryModule } from '../inventory/inventory.module';
 import { MessageModule } from 'message/message.module';
+import { EventModule } from 'event/event.module';
 
 @Module({
-  imports: [UserModule, NewsModule, ProfileModule, ItemModule, InventoryModule, MessageModule],
+  imports: [UserModule, NewsModule, ProfileModule, ItemModule, InventoryModule, MessageModule, EventModule],
   controllers: [MasterController],
 })
 export class MasterModule {}

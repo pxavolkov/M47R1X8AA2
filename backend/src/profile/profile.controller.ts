@@ -11,6 +11,9 @@ import paths from '../paths';
 import { CitizenGuard } from '../auth/citizen.guard';
 import { MessageService } from 'message/message.service';
 import { TransferMoney } from '@shared/requests';
+import { EventService } from '../event/event.service';
+import { EventType } from '@shared/enums';
+import utils from '../utils';
 
 const objectify = (obj, [k, v]) => ({ ...obj, [k]: v });
 
@@ -21,6 +24,7 @@ export class ProfileController {
     private readonly profileService: ProfileService,
     private readonly newsService: NewsService,
     private readonly messageService: MessageService,
+    private readonly eventService: EventService,
   ) {}
 
   @Get('load')
@@ -50,22 +54,45 @@ export class ProfileController {
 
     try {
       const newPath = paths.photo;
-      await new Promise((resolve, reject) => mkdirp(newPath, (err) => !err ? resolve() : reject(err)));
-      await new Promise((resolve, reject) => {
-        rename(photo.path, `${newPath}/${user.id}.png`, (err) => !err ? resolve() : reject(err));
-      });
+      const photoFile = `${newPath}/${user.id}.png`;
+      await utils.mkdirp(newPath);
 
-      this.profileService.setUploadedPhoto(user.id, true);
+      const eventData = {
+        old: {
+          size: null,
+          hash: null,
+        },
+        new: {
+          size: null,
+          hash: null,
+        },
+      };
+      try {
+        eventData.old.size = (await utils.stat(photoFile)).size;
+        eventData.old.hash = await utils.fileHash(photoFile);
+      } catch (err) {}
 
+      await utils.rename(photo.path, photoFile);
+
+      try {
+        eventData.new.size = (await utils.stat(photoFile)).size;
+        eventData.new.hash = await utils.fileHash(photoFile);
+      } catch (err) {}
+
+      await this.profileService.setUploadedPhoto(user.id, true);
+
+      this.eventService.add(user, EventType.PHOTO_UPLOAD, eventData);
       success = true;
       this.logger.log(`Uploaded photo for user ${user.id}!`);
       return 'success';
     } finally {
       if (!success) {
-        unlink(photo.path, (err) => {
-          if (!err) this.logger.log(`File removed: photo: ${photo.originalname}`);
-          else this.logger.error(`Error removing file: photo: ${photo.originalname}: ${err.stack || err.message}`);
-        });
+        try {
+          await utils.unlink(photo.path);
+          this.logger.log(`File removed: photo: ${photo.originalname}`);
+        } catch (err) {
+          this.logger.error(`Error removing file: photo: ${photo.originalname}: ${err.stack || err.message}`);
+        }
       }
     }
   }
@@ -78,6 +105,11 @@ export class ProfileController {
     const balance = await this.profileService.getBalance(user.id);
     if (balance >= data.amount) {
       await this.profileService.transfer(user.id, data.userId, data.amount);
+      this.eventService.add(user, EventType.MONEY_TRANSFER, {
+        toUserId: data.userId,
+        balanceBefore: balance,
+        amount: data.amount
+      });
       return 'success';
     } else throw new ForbiddenException();
   }
