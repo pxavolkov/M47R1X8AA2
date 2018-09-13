@@ -4,6 +4,7 @@ import { LoginRequest } from '@shared/requests';
 import { LoginResponse } from '@shared/responses';
 import { UserService } from '../user/user.service';
 import { JwtPayload } from './jwt-payload.interface';
+import { User } from '../user/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -18,7 +19,7 @@ export class AuthService {
     };
   }
 
-  async validateUser(payload: JwtPayload): Promise<any> {
-    return await this.userService.findOneByEmail(payload.email);
+  async validateUser(payload: JwtPayload): Promise<User> {
+    return await this.userService.findOneByEmailWithProfile(payload.email);
   }
 }

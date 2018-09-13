@@ -57,3 +57,29 @@ export class RegisterRequest {
     return validate(this, validatorOptions);
   }
 }
+
+export interface SendMessage {
+  userId: number;
+  text: string;
+}
+
+export interface LoadDialog {
+  userId: number;
+}
+
+export interface TransferMoney {
+  userId: number;
+  amount: number;
+}
+
+export interface TransferItem {
+  userId: number;
+  itemId: number;
+  amount: number;
+}
+
+export interface SetProperty {
+  userId?: number;
+  propertyId: number;
+  value: string;
+}

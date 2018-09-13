@@ -8,6 +8,14 @@ import { ProfileService } from './profile.service';
 import { NewsService } from '../news/news.service';
 import { ProfileResponse, PublicProfile, StartMiningResponse } from '@shared/responses';
 import paths from '../paths';
+import { CitizenGuard } from '../auth/citizen.guard';
+import { MessageService } from 'message/message.service';
+import { TransferMoney } from '@shared/requests';
+import { EventService } from '../event/event.service';
+import { EventType } from '@shared/enums';
+import utils from '../utils';
+
+const objectify = (obj, [k, v]) => ({ ...obj, [k]: v });
 
 @Controller('profile')
 export class ProfileController {
@@ -15,6 +23,8 @@ export class ProfileController {
   constructor(
     private readonly profileService: ProfileService,
     private readonly newsService: NewsService,
+    private readonly messageService: MessageService,
+    private readonly eventService: EventService,
   ) {}
 
   @Get('load')
@@ -31,6 +41,7 @@ export class ProfileController {
     response.miningAmount = parseInt(process.env.MINING_AMOUNT, 10);
 
     response.unreadNews = await this.newsService.unreadNewsCountByUserId(user.id);
+    response.unreadMessages = await this.messageService.unreadCountByUserId(user.id);
     return response;
   }
 
@@ -43,35 +54,62 @@ export class ProfileController {
 
     try {
       const newPath = paths.photo;
-      await new Promise((resolve, reject) => mkdirp(newPath, (err) => !err ? resolve() : reject(err)));
-      await new Promise((resolve, reject) => {
-        rename(photo.path, `${newPath}/${user.id}.png`, (err) => !err ? resolve() : reject(err));
-      });
+      const photoFile = `${newPath}/${user.id}.png`;
+      await utils.mkdirp(newPath);
 
-      this.profileService.setUploadedPhoto(user.id, true);
+      const eventData = {
+        old: {
+          size: null,
+          hash: null,
+        },
+        new: {
+          size: null,
+          hash: null,
+        },
+      };
+      try {
+        eventData.old.size = (await utils.stat(photoFile)).size;
+        eventData.old.hash = await utils.fileHash(photoFile);
+      } catch (err) {}
 
+      await utils.rename(photo.path, photoFile);
+
+      try {
+        eventData.new.size = (await utils.stat(photoFile)).size;
+        eventData.new.hash = await utils.fileHash(photoFile);
+      } catch (err) {}
+
+      await this.profileService.setUploadedPhoto(user.id, true);
+
+      this.eventService.add(user, EventType.PHOTO_UPLOAD, eventData);
       success = true;
       this.logger.log(`Uploaded photo for user ${user.id}!`);
       return 'success';
     } finally {
       if (!success) {
-        unlink(photo.path, (err) => {
-          if (!err) this.logger.log(`File removed: photo: ${photo.originalname}`);
-          else this.logger.error(`Error removing file: photo: ${photo.originalname}: ${err.stack || err.message}`);
-        });
+        try {
+          await utils.unlink(photo.path);
+          this.logger.log(`File removed: photo: ${photo.originalname}`);
+        } catch (err) {
+          this.logger.error(`Error removing file: photo: ${photo.originalname}: ${err.stack || err.message}`);
+        }
       }
     }
   }
 
   @Post('transfer')
   @UseGuards(AuthGuard('jwt'))
-  async transfer(@Request() {user}, @Body() data): Promise<'success'> {
-    const amount = parseInt(data.amount, 10);
-    if (!(amount > 0)) throw new BadRequestException();
+  async transfer(@Request() {user}, @Body() data: TransferMoney): Promise<'success'> {
+    if (!(data.amount > 0)) throw new BadRequestException();
 
     const balance = await this.profileService.getBalance(user.id);
-    if (balance >= amount) {
-      await this.profileService.transfer(user.id, data.userId, amount);
+    if (balance >= data.amount) {
+      await this.profileService.transfer(user.id, data.userId, data.amount);
+      this.eventService.add(user, EventType.MONEY_TRANSFER, {
+        toUserId: data.userId,
+        balanceBefore: balance,
+        amount: data.amount
+      });
       return 'success';
     } else throw new ForbiddenException();
   }
@@ -79,21 +117,24 @@ export class ProfileController {
   @Get('list')
   @UseGuards(AuthGuard('jwt'))
   async list(@Request() {user}): Promise<PublicProfile[]> {
-    return (await this.profileService.allPublicExcept(user.id)).map(
+    const unreadMessages = (await this.messageService.unreadCountByDialogs(user.id))
+      .map((v) => [v.fromUserId, v.count])
+      .reduce(objectify, {});
+    const profiles = (await this.profileService.allPublicExcept(user.id)).map(
       ({userId, firstName, lastName, photoUploaded}) => ({
         id: userId,
         firstName,
         lastName,
         photoUploaded,
+        unreadMessages: unreadMessages[userId] || 0,
       }),
     );
+    return profiles;
   }
 
   @Post('startMining')
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(AuthGuard('jwt'), new CitizenGuard())
   async startMining(@Request() {user}): Promise<StartMiningResponse> {
-    if (!await this.profileService.isCitizen(user.id)) throw new ForbiddenException();
-
     const miningTime = await this.profileService.getMiningTime(user.id);
     if (!miningTime) {
       await this.profileService.startMining(user.id);

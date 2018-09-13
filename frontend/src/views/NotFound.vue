@@ -3,9 +3,9 @@
     <h4 class="blue">................. ERROR 404 ................. <span class="yellow" style="font-size:3em">OOPS!</span><div class="d-lg-none d-xl-none"></div>................. ERROR 404 .................</h4>
 		<h4 ><img class="img404" src="@/assets/img/404.png"/>&emsp;Судя по всему, что-то пошло не так!&emsp;<img class="img404" src="@/assets/img/404.png"/></h4>
 		<h4 >Попробуйте:</h4>
-		<h4><a href="#" @click="window.history.back();">- вернуться назад -</a></h4>
-		<h4><a href="/Profile">- перейти в свой профиль -</a></h4>
-		<h4><a href="/">- выйти из сети -</a></h4>
+		<h4><a href="#" @click="$router.go(-1)">- вернуться назад -</a></h4>
+		<h4><router-link to="/Profile">- перейти в свой профиль -</router-link></h4>
+		<h4><router-link to="/">- выйти из сети -</router-link></h4>
 		<br>
 		<h4 >Также, вы можете:</h4>
 		<h4><a href="https://www.youtube.com/watch?v=VsDpw6PQGg0">- напиться -</a></h4>

@@ -12,6 +12,9 @@ import { ProfileModule } from '../profile/profile.module';
 import { GiftModule } from '../gift/gift.module';
 import { TransactionModule } from '../transaction/transaction.module';
 import { MasterModule } from '../master/master.module';
+import { MessageModule } from '../message/message.module';
+import { ItemModule } from '../item/item.module';
+import { InventoryModule } from '../inventory/inventory.module';
 
 @Module({
   imports: [
@@ -23,6 +26,9 @@ import { MasterModule } from '../master/master.module';
     TransactionModule,
     GiftModule,
     MasterModule,
+    MessageModule,
+    ItemModule,
+    InventoryModule,
   ],
   controllers: [AppController],
 })

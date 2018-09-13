@@ -1,9 +1,11 @@
 <template>
   <div v-if="isLoaded">
     <h2 class="green text-center">Регистрации</h2>
-    <b-button to="/Master/News" class="mb-2">Новости</b-button>
+    <b-button to="/Master/News" class="mb-2">Новости</b-button><br>
+    <h5 class="green">Действия с выбранными пользователями ({{ selectedUsers.length }}):</h5>
+    <b-button variant="primary" class="mb-2" :disabled="selectedUsers.length === 0" v-b-modal.sendMessageModal>Отправить сообщение</b-button>
 
-    <b-modal id="balanceEditModal" size="sm" hide-header ok-title="Изменить" cancel-title="Отмена" @hidden="balanceEditError = ''" @ok="balanceEditSubmit">
+    <b-modal id="balanceEditModal" class="defaultModal" size="sm" hide-header ok-title="Изменить" cancel-title="Отмена" @hidden="balanceEditError = ''" @ok="balanceEditSubmit">
       <span>Имя: <span class="green">{{ balanceEditUserName }}</span></span><br/>
       <b-form-group
         horizontal
@@ -14,7 +16,18 @@
       </b-form-group>
     </b-modal>
 
+    <b-modal id="sendMessageModal" class="defaultModal" size="sm" hide-header ok-title="Отправить" cancel-title="Отмена" @ok="sendMessageSubmit">
+      <span>Имена: <span class="green">{{ selectedPlayerNames }}</span></span><br/>
+      <b-form-textarea v-model="messageText" placeholder="Введите сообщение" :rows="3" :max-rows="9" style="resize: none;"></b-form-textarea>
+    </b-modal>
+
     <b-table id="master-users" class="lightGreen" bordered hover :items="users" :fields="fields">
+      <template slot="HEAD_checkbox" slot-scope="data">
+        <b-form-checkbox @click.native.stop v-model="allUsersSelected" class="no-label"></b-form-checkbox>
+      </template>
+      <template slot="checkbox" slot-scope="data">
+        <b-form-checkbox v-model="selectedUsers" :value="data.index" class="no-label"></b-form-checkbox>
+      </template>
       <template slot="playerName" slot-scope="data">
         {{ data.value }} ({{ data.item.playerAge }})
       </template>
@@ -44,6 +57,10 @@
       <template slot="actions" slot-scope="data">
         <b-button v-if="data.item.profile.isCitizen" size="sm" variant="danger" @click="setCitizen(data.item.id, false)">Выключить</b-button>
         <b-button v-else size="sm" variant="success" @click="setCitizen(data.item.id, true)">Включить</b-button>
+        <br>
+        <b-button class="mt-1" size="sm" variant="primary" :to="'Inventory/' + data.item.id">Инвентарь</b-button>
+        <br>
+        <b-button class="mt-1" size="sm" variant="primary" :to="'/Messages/' + data.item.id">Сообщения</b-button>
       </template>
       <template slot="donate" slot-scope="data">
         <b-button v-if="data.item.profile.donated" size="sm" variant="danger" @click="setDonated(data.item.id, false)">Не оплатил</b-button>
@@ -57,7 +74,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { State, Getter, Action } from 'vuex-class';
 import { Sex } from 'shared/enums';
-import { User, SetBalance } from 'shared/master';
+import { User, SetBalance, SendMultiMessage } from 'shared/master';
 import utils from '@/utils';
 
 const namespace: string = 'master';
@@ -68,12 +85,16 @@ export default class MasterUsers extends Vue {
   @Getter('isUsersLoaded', { namespace }) private isLoaded!: boolean;
   @Action('setBalance', { namespace }) private setBalanceAction!: (data: {data: SetBalance}) => Promise<void>;
   @Action('uploadQuenta', { namespace }) private uploadQuentaAction!: (data: {data: FormData}) => Promise<void>;
+  @Action('sendMultiMessage', { namespace })
+  private sendMultiMessageAction!: (data: {data: SendMultiMessage}) => Promise<void>;
 
   private balanceEdit = {
     userId: 0,
     balance: 0,
   };
   private balanceEditUserName = '';
+  private selectedUsers: string[] = [];
+  private messageText: string = '';
 
   public beforeCreate() {
     this.$store.dispatch(`${namespace}/users`);
@@ -81,6 +102,7 @@ export default class MasterUsers extends Vue {
 
   private get fields() {
     return [
+      {key: 'checkbox', label: ''},
       {key: 'playerName', label: 'Имя (возраст)'},
       {key: 'email', label: 'Email'},
       {key: 'registrationDate', label: 'Дата регистрации', formatter: this.dateFormatter},
@@ -96,6 +118,24 @@ export default class MasterUsers extends Vue {
 
   private get Sex() {
     return Sex;
+  }
+
+  private get allUsersSelected() {
+    return this.selectedUsers.length === this.users.length;
+  }
+
+  private set allUsersSelected(value: boolean) {
+    if (value === this.allUsersSelected) return;
+    if (value) this.selectedUsers = Object.keys(this.users);
+    else this.selectedUsers = [];
+  }
+
+  private get selectedPlayerNames() {
+    return this.selectedUsers.map((i) => this.users[i as any].playerName).join(', ');
+  }
+
+  private get selectedUserIds() {
+    return this.selectedUsers.map((i) => this.users[i as any].id);
   }
 
   private dateFormatter(date: string): string {
@@ -134,6 +174,14 @@ export default class MasterUsers extends Vue {
       });
   }
 
+  private async sendMessageSubmit() {
+    this.sendMultiMessageAction({data: {userIds: this.selectedUserIds, text: this.messageText}})
+      .then()
+      .catch((err: any) => {
+        this.showAlert('danger', `Ошибка при отправке сообщения (${err.response.status})`);
+      });
+  }
+
   private async fileUpload(id: number) {
     const files = (this.$refs['inputQuenta' + id] as HTMLInputElement).files;
     if (!files || !files[0]) return;
@@ -156,8 +204,7 @@ export default class MasterUsers extends Vue {
   color: aqua;
 }
 
-#balanceEditModal .modal-content {
-  background-color: #00212F;
-  color: #fff;
+.custom-control-inline.no-label {
+  margin: 0;
 }
 </style>

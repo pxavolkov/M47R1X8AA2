@@ -52,12 +52,13 @@
         <b-col cols="12">
           <router-link to="/User" >
             <img src="@/assets/img/userlistr.png" class="imgButton"/>
+            <NumberBadge class="totalMessagesCount" :value="profile.unreadMessages"/>
           </router-link>
         </b-col>
 
         <b-col cols="12" class="almostWhite fontsize200 news" @click="news">
           Новости Опоры
-          <div v-if="profile.unreadNews > 0" class="fontsize75 newsCount">{{ profile.unreadNews }}</div>
+          <NumberBadge class="newsCount" :value="profile.unreadNews"/>
         </b-col>
       </b-row>
     </b-col>
@@ -69,10 +70,11 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { State, Action, Getter } from 'vuex-class';
 import { Sex } from 'shared/enums';
 import { ProfileResponse, StartMiningResponse } from 'shared/responses';
+import NumberBadge from '@/components/NumberBadge.vue';
 
 const namespace: string = 'profile';
 
-@Component
+@Component({components: {NumberBadge}})
 export default class Profile extends Vue {
   @State((state) => state.profile.profile) private profile!: ProfileResponse | null;
   @Getter('isProfileLoaded', { namespace }) private isLoaded!: boolean;
@@ -187,14 +189,13 @@ export default class Profile extends Vue {
 }
 
 .newsCount {
-  background: #008DD5;
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  display: inline-block;
-  position: absolute;
   right: 9px;
   top: -10px;
+}
+
+.totalMessagesCount {
+  right: 113px;
+  top: 5px;
 }
 
 .news {

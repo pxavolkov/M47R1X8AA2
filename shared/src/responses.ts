@@ -21,6 +21,7 @@ export class ProfileResponse {
   public miningAmount: number = 0;
   public unreadNews: number = 0;
   public quentaPath: boolean = false;
+  public unreadMessages: number = 0;
 }
 
 export class News {
@@ -38,9 +39,54 @@ export class PublicProfile {
   public firstName: string = '';
   public lastName: string = '';
   public photoUploaded: boolean = false;
+  public unreadMessages?: number = 0;
 }
 
 export class StartMiningResponse {
   public miningEndTime: number = 0;
   public miningAmount: number = 0;
+}
+
+export interface Dialog {
+  messages: Message[];
+  users: PublicProfile[];
+}
+
+export interface Message {
+  id: number;
+  fromUserId: number;
+  toUserId: number;
+  text: string;
+  date: Date | string;
+}
+
+export interface InventoryItem {
+  userId: number;
+  itemId: number;
+  amount: number;
+  item: Item;
+}
+
+export interface Item {
+  id: number;
+  title: string;
+  shortDesc: string;
+  longDesc: string;
+}
+
+export interface InventoryItemAmount {
+  itemId: number;
+  amount: number;
+}
+
+export interface PropertyValueEditable {
+  id: number;
+  name: string;
+  value: string;
+  canEdit: boolean;
+}
+
+export interface PropertiesResponse {
+  profile: PublicProfile;
+  list: PropertyValueEditable[];
 }

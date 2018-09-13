@@ -66,4 +66,8 @@ body {
   color: #FE6F01;
 }
 
+.defaultModal .modal-content {
+  background-color: #00212F;
+  color: #fff;
+}
 </style>

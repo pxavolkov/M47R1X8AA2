@@ -42,6 +42,10 @@ export class UserService {
     return await this.userRepository.findOne({ email });
   }
 
+  async findOneByEmailWithProfile(email: string): Promise<User> {
+    return await this.userRepository.findOneOrFail({email}, {relations: ['profile']});
+  }
+
   async register(data: RegisterRequest): Promise<User> {
     const user = new User();
     for (const k of ['playerName', 'playerAge', 'info', 'allergy', 'email']) user[k] = data[k];

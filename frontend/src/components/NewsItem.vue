@@ -50,6 +50,7 @@ export default class NewsItem extends Vue {
 <style lang="scss">
 .news-item {
   border-bottom: 1px dashed #0098DA;
+  font-family: NewsFont;
 }
 
 .news-text {
@@ -77,5 +78,12 @@ export default class NewsItem extends Vue {
   &.expanded {
     transform: scaleY(-1); // rotate(180deg);
   }
+}
+
+@font-face {
+    font-family: NewsFont;
+    src: url(../assets/fonts/NewsFont.otf) format('truetype');
+    font-weight: 400;
+    font-style: normal
 }
 </style>

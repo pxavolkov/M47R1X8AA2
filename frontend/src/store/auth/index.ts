@@ -4,6 +4,7 @@ import { actions } from './actions';
 import { mutations } from './mutations';
 import { AuthStatus, AuthData, AuthState, RootState } from '../types';
 import axios from 'axios';
+import { connect } from '@/socket';
 
 let authData: AuthData | null = null;
 const str = localStorage.getItem('auth');
@@ -18,6 +19,8 @@ export const state: AuthState = {
   auth: authData,
   errorMessage: '',
 };
+
+if (state.status === AuthStatus.LOGGED_IN && state.auth) connect(state.auth.token);
 
 const namespaced: boolean = true;
 

@@ -5,6 +5,8 @@ import { Repository, UpdateResult, FindManyOptions, Not, Equal, MoreThan, LessTh
 import { User } from '../user/user.entity';
 import { Profile } from './profile.entity';
 import { TransactionService } from '../transaction/transaction.service';
+import { EventService } from '../event/event.service';
+import { EventType } from '@shared/enums';
 
 @Injectable()
 export class ProfileService {
@@ -15,6 +17,7 @@ export class ProfileService {
     @InjectRepository(Profile)
     private readonly profileRepository: Repository<Profile>,
     private readonly transactionService: TransactionService,
+    private readonly eventService: EventService,
   ) {}
 
   async register(userId: number, data: RegisterRequest, quentaPath: string): Promise<Profile> {
@@ -64,6 +67,7 @@ export class ProfileService {
   async startMining(id: number): Promise<void> {
     await this.profileRepository.update({userId: id}, {miningTime: new Date()});
     this.logger.log(`Mining started for user #${id}!`);
+    this.eventService.add(id, EventType.MINING_START, {time: this.miningTime, amount: this.miningAmount});
     // +500ms is fix for rounding issues when mining started on xx:xx:xx.500+
     setTimeout(() => this.updateMining(id), this.miningTime + 500);
   }
@@ -78,6 +82,7 @@ export class ProfileService {
       {miningTime: null},
     );
     if (result.raw.changedRows) {
+      this.eventService.add(id, EventType.MINING_FINISH, {time: this.miningTime, amount: this.miningAmount});
       await this.addMoney(id, this.miningAmount);
       await this.transactionService.mining(id, this.miningAmount);
       this.logger.log(`Mining finished for user #${id}!`);
@@ -115,5 +120,13 @@ export class ProfileService {
 
   async setQuentaPath(userId: number, quentaPath: string): Promise<void> {
     await this.profileRepository.update({userId}, {quentaPath});
+  }
+
+  async getPublicProfile(userId: number):
+  Promise<{userId: number, firstName: string, lastName: string, photoUploaded: boolean}> {
+    return await this.profileRepository.findOneOrFail(
+      {userId},
+      {select: ['userId', 'firstName', 'lastName', 'photoUploaded']}
+    );
   }
 }

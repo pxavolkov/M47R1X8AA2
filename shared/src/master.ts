@@ -46,3 +46,28 @@ export interface UploadQuenta {
   userId: number;
   quentaPath: string;
 }
+
+export interface Item {
+  id: number;
+  title: string;
+  shortDesc: string;
+  longDesc: string;
+}
+
+export interface InventoryItemData {
+  userId: number;
+  itemId: number;
+  amount: number;
+}
+
+export interface SendMultiMessage {
+  userIds: number[];
+  text: string;
+}
+
+export interface Property {
+  id?: number;
+  name: string;
+  viewRoles: number;
+  editRoles: number;
+}

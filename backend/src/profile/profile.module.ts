@@ -5,9 +5,11 @@ import { Profile } from './profile.entity';
 import { ProfileService } from './profile.service';
 import { NewsModule } from '../news/news.module';
 import { TransactionModule } from '../transaction/transaction.module';
+import { MessageModule } from 'message/message.module';
+import { EventModule } from 'event/event.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Profile]), NewsModule, TransactionModule],
+  imports: [TypeOrmModule.forFeature([Profile]), NewsModule, TransactionModule, MessageModule, EventModule],
   providers: [ProfileService],
   controllers: [ProfileController],
   exports: [ProfileService],
