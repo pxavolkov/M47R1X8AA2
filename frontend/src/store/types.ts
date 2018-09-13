@@ -1,5 +1,5 @@
-import { Message, PublicProfile, InventoryItem } from 'shared/responses';
-import { User, News, Item } from 'shared/master';
+import { Message, PublicProfile, InventoryItem, PropertyValueEditable } from 'shared/responses';
+import { User, News, Item, Property } from 'shared/master';
 
 export interface RootState {
   version: string;
@@ -35,6 +35,7 @@ export interface MasterState {
   news: News[];
   items: Item[];
   inventory: InventoryItem[];
+  properties: Property[];
 }
 
 export interface GeneratedMasterState {
@@ -43,12 +44,14 @@ export interface GeneratedMasterState {
     news: boolean,
     items: boolean,
     inventory: boolean,
+    properties: boolean,
   };
   error: {
     users: boolean,
     news: boolean,
     items: boolean,
     inventory: boolean,
+    properties: boolean,
   };
 }
 
@@ -67,4 +70,9 @@ export interface Messages {
 
 export interface InventoryState {
   items: InventoryItem[];
+}
+
+export interface PropertyState {
+  list: PropertyValueEditable[];
+  profile: PublicProfile;
 }

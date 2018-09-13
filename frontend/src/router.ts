@@ -18,6 +18,8 @@ import MasterNews from './views/MasterNews.vue';
 import Messages from './views/Messages.vue';
 import MasterItems from './views/MasterItems.vue';
 import Inventory from './views/Inventory.vue';
+import MasterProperties from './views/MasterProperties.vue';
+import Properties from './views/Properties.vue';
 
 Vue.use(Router);
 
@@ -100,6 +102,13 @@ const router = new Router({
           component: Inventory,
           meta: {requiresAuth: true},
         },
+        {
+          path: '/Info/:id?',
+          name: 'Properties',
+          component: Properties,
+          props: true,
+          meta: {requiresAuth: true},
+        },
       ],
     },
     {
@@ -131,6 +140,12 @@ const router = new Router({
           name: 'MasterInventory',
           component: Inventory,
           props: true,
+          meta: {requiresAuth: true},
+        },
+        {
+          path: 'Properties',
+          name: 'MasterProperties',
+          component: MasterProperties,
           meta: {requiresAuth: true},
         },
       ],

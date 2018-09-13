@@ -37,7 +37,7 @@ export class PublicProfile {
   public firstName: string = '';
   public lastName: string = '';
   public photoUploaded: boolean = false;
-  public unreadMessages: number = 0;
+  public unreadMessages?: number = 0;
 }
 
 export class StartMiningResponse {
@@ -75,4 +75,16 @@ export interface Item {
 export interface InventoryItemAmount {
   itemId: number;
   amount: number;
+}
+
+export interface PropertyValueEditable {
+  id: number;
+  name: string;
+  value: string;
+  canEdit: boolean;
+}
+
+export interface PropertiesResponse {
+  profile: PublicProfile;
+  list: PropertyValueEditable[];
 }

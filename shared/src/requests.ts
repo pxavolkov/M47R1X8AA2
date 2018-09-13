@@ -77,3 +77,9 @@ export interface TransferItem {
   itemId: number;
   amount: number;
 }
+
+export interface SetProperty {
+  userId?: number;
+  propertyId: number;
+  value: string;
+}

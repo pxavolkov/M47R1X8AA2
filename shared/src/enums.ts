@@ -8,6 +8,7 @@ export enum TransactionType {
   MINING = 'MINING',
 }
 
+// tslint:disable max-line-length
 export enum EventType {
   LOGIN = 'LOGIN', // {rememberMe:boolean}
   PHOTO_UPLOAD = 'PHOTO_UPLOAD', // {old:{size:number,hash:string},new:{size:number,hash:string}}
@@ -27,4 +28,15 @@ export enum EventType {
   NEWS_EDIT = 'NEWS_EDIT', // {id:number,old:{title:string,text:string,createDate:Date},new:{title:string,text:string,createDate:Date}}
   ITEM_ADD = 'ITEM_ADD', // {id:number,title:string,shortDesc:string,longDesc:string,icon:{size:number,hash:string}}
   ITEM_EDIT = 'ITEM_EDIT', // {id:number,old:{title:string,shortDesc:string,longDesc:string,icon:{size:number,hash:string}},new:{title:string,shortDesc:string,longDesc:string,icon:{size:number,hash:string}}}
+  PROPERTY_ADD = 'PROP_ADD', // {id:number,name:string,viewRoles:number,editRoles:number}
+  PROPERTY_EDIT = 'PROP_EDIT', // {id:number,old:{name:string,viewRoles:number,editRoles:number},new:{name:string,viewRoles:number,editRoles:number}}
+
+  VALUE_EDIT = 'VALUE_EDIT', // {propertyId:number,userId:number,old:{value:string},new:{value:string}}
+}
+// tslint:enable max-line-length
+
+// tslint:disable no-bitwise
+export enum Role {
+  Master = 1 << 0,
+  Self = 1 << 1,
 }

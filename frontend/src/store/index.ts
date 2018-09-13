@@ -9,6 +9,7 @@ import { alert } from './alert';
 import { master } from './master';
 import { message } from './message';
 import { inventory } from './inventory';
+import { property } from './property';
 
 Vue.use(Vuex);
 
@@ -21,6 +22,7 @@ const store = new Vuex.Store({
     master: Object.assign({namespaced: true}, master),
     message: Object.assign({namespaced: true}, message),
     inventory: Object.assign({namespaced: true}, inventory),
+    property: Object.assign({namespaced: true}, property),
   },
 });
 

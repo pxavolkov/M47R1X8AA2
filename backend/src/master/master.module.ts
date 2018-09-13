@@ -7,9 +7,11 @@ import { ItemModule } from '../item/item.module';
 import { InventoryModule } from '../inventory/inventory.module';
 import { MessageModule } from 'message/message.module';
 import { EventModule } from 'event/event.module';
+import { PropertyModule } from '../property/property.module';
 
 @Module({
-  imports: [UserModule, NewsModule, ProfileModule, ItemModule, InventoryModule, MessageModule, EventModule],
+  imports: [UserModule, NewsModule, ProfileModule, ItemModule, InventoryModule, MessageModule, EventModule,
+    PropertyModule],
   controllers: [MasterController],
 })
 export class MasterModule {}

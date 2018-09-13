@@ -1,6 +1,6 @@
 import Vapi from 'vuex-rest-api';
 import { MasterState, GeneratedMasterState } from '@/store/types';
-import { SetCitizen, News, SetBalance, UploadQuenta, Item } from 'shared/master';
+import { SetCitizen, News, SetBalance, UploadQuenta, Item, Property } from 'shared/master';
 import { InventoryItem, InventoryItemAmount } from 'shared/responses';
 import Vue from 'vue';
 
@@ -11,6 +11,7 @@ const master = new Vapi({
       news: [],
       items: [],
       inventory: [],
+      properties: [],
     },
   })
   .get({
@@ -32,6 +33,11 @@ const master = new Vapi({
     action: 'items',
     property: 'items',
     path: '/items',
+  })
+  .get({
+    action: 'properties',
+    property: 'properties',
+    path: '/properties',
   })
   .get({
     action: 'loadInventory',
@@ -128,6 +134,26 @@ const master = new Vapi({
     action: 'sendMultiMessage',
     path: '/sendMultiMessage',
   })
+  .post({
+    action: 'updateProperty',
+    path: '/updateProperty',
+    onSuccess: (state: MasterState, payload: {data: Property}) => {
+      const item = state.properties.find((v) => v.id === payload.data.id);
+      if (!item) return;
+
+      item.name = payload.data.name;
+      item.viewRoles = payload.data.viewRoles;
+      item.editRoles = payload.data.editRoles;
+    },
+  })
+  .post({
+    action: 'addProperty',
+    path: '/addProperty',
+    onSuccess: (state: MasterState, payload: {data: Property}) => {
+      const data = Object.assign({}, payload.data);
+      state.properties.push(data);
+    },
+  })
   .getStore();
 
 const getters = {
@@ -139,6 +165,9 @@ const getters = {
   },
   isItemsLoaded: (state: MasterState & GeneratedMasterState) => {
     return !state.pending.items && !state.error.items;
+  },
+  isPropertiesLoaded: (state: MasterState & GeneratedMasterState) => {
+    return !state.pending.properties && !state.error.properties;
   },
 };
 

@@ -58,3 +58,10 @@ export interface SendMultiMessage {
   userIds: number[];
   text: string;
 }
+
+export interface Property {
+  id?: number;
+  name: string;
+  viewRoles: number;
+  editRoles: number;
+}

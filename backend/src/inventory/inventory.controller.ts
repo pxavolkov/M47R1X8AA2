@@ -10,6 +10,7 @@ import { EventService } from '../event/event.service';
 import { EventType } from '@shared/enums';
 
 @Controller('inventory')
+@UseGuards(AuthGuard('jwt'), new CitizenGuard())
 export class InventoryController {
   private readonly logger = new Logger(InventoryController.name);
   constructor(
@@ -18,13 +19,11 @@ export class InventoryController {
   ) {}
 
   @Get('load')
-  @UseGuards(AuthGuard('jwt'), new CitizenGuard())
   async load(@Request() {user}): Promise<InventoryItem[]> {
     return await this.inventoryService.getUserInventory(user.id);
   }
 
   @Post('transfer')
-  @UseGuards(AuthGuard('jwt'))
   async transfer(@Request() {user}, @Body() data: TransferItem): Promise<InventoryItemAmount> {
     if (!(data.amount > 0)) throw new BadRequestException();
 

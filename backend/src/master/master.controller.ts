@@ -10,7 +10,7 @@ import { NewsService } from '../news/news.service';
 import { ProfileService } from '../profile/profile.service';
 import { News } from '../news/news.entity';
 import paths from '../paths';
-import { SetBalance, SetCitizen, UploadQuenta, SendMultiMessage } from '@shared/master';
+import { SetBalance, SetCitizen, UploadQuenta, SendMultiMessage, Property as IProperty } from '@shared/master';
 import { unlink, rename } from 'fs';
 import { ItemService } from '../item/item.service';
 import { Item } from '../item/item.entity';
@@ -21,6 +21,8 @@ import { MessageService } from '../message/message.service';
 import utils from 'utils';
 import { EventService } from '../event/event.service';
 import { EventType } from '@shared/enums';
+import { PropertyService } from '../property/property.service';
+import { Property } from '../property/property.entity';
 
 @Controller('master')
 @UseGuards(AuthGuard('jwt'), new RolesGuard(Role.Master))
@@ -34,6 +36,7 @@ export class MasterController {
     private readonly inventoryService: InventoryService,
     private readonly messageService: MessageService,
     private readonly eventService: EventService,
+    private readonly propertyService: PropertyService,
   ) {}
 
   @Get('users')
@@ -49,6 +52,11 @@ export class MasterController {
   @Get('items')
   async items(): Promise<any> {
     return this.itemService.all();
+  }
+
+  @Get('properties')
+  async properties(): Promise<any> {
+    return this.propertyService.allProperties();
   }
 
   @Get('loadInventory')
@@ -184,6 +192,37 @@ export class MasterController {
       this.eventService.add(user, EventType.BALANCE_CHANGE, {userId, old: {balance: oldBalance}, new: {balance}});
     } catch (err) {}
     return {userId, balance};
+  }
+
+  @Post('updateProperty')
+  async updateProperty(@Request() {user}, @Body() data: IProperty): Promise<any> {
+    // tslint:disable-next-line no-bitwise
+    data.editRoles |= Role.Master;
+    // tslint:disable-next-line no-bitwise
+    data.viewRoles |= Role.Master;
+    const {id: oldId, ...oldValues} = await this.propertyService.getPropertyById(data.id);
+    const {id, ...values} = data;
+
+    await this.propertyService.updateProperty(id, values);
+
+    this.eventService.add(user, EventType.PROPERTY_EDIT, {
+      id,
+      old: oldValues,
+      new: values,
+    });
+
+    return data;
+  }
+
+  @Post('addProperty')
+  async addProperty(@Request() {user}, @Body() data: IProperty): Promise<Property> {
+    // tslint:disable-next-line no-bitwise
+    data.editRoles |= Role.Master;
+    // tslint:disable-next-line no-bitwise
+    data.viewRoles |= Role.Master;
+    const property = await this.propertyService.addProperty(data);
+    this.eventService.add(user, EventType.PROPERTY_ADD, property);
+    return property;
   }
 
   @Post('uploadQuenta')

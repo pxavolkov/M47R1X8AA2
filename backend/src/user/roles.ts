@@ -1,9 +1,8 @@
 import { ValueTransformer } from 'typeorm/decorator/options/ValueTransformer';
-/* tslint:disable:no-bitwise */
-export enum Role {
-  Master = 1 << 0,
-}
+import { Role } from '@shared/enums';
+export { Role } from '@shared/enums';
 
+/* tslint:disable:no-bitwise */
 const roleValues: number[] = Object.keys(Role)
   .filter(k => typeof Role[k as any] === 'number')
   .map(k => Role[k as any]) as any;
@@ -15,6 +14,10 @@ export class Roles extends Number {
 
   hasAll(roles: Role[]): boolean {
     return this.has(roles.reduce((acc, v) => acc & v, 0));
+  }
+
+  toNumber(): number {
+    return Number(this);
   }
 }
 

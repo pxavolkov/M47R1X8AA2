@@ -118,7 +118,8 @@ export class ProfileService {
     await this.profileRepository.update({userId}, {quentaPath});
   }
 
-  async getPublicProfile(userId: number): Promise<Profile> {
+  async getPublicProfile(userId: number):
+  Promise<{userId: number, firstName: string, lastName: string, photoUploaded: boolean}> {
     return await this.profileRepository.findOneOrFail(
       {userId},
       {select: ['userId', 'firstName', 'lastName', 'photoUploaded']}
