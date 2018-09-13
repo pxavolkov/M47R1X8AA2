@@ -40,6 +40,12 @@ export class MasterController {
     return {userId, isCitizen};
   }
 
+  @Post('setDonated')
+  async setDonated(@Body() {userId, donated}): Promise<SetDonated> {
+    await this.profileService.setDonated(userId, donated);
+    return {userId, donated};
+  }
+
   @Post('updateNews')
   async updateNews(@Body() {newsId, data}): Promise<any> {
     await this.newsService.update(newsId, data);

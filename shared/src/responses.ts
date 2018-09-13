@@ -15,10 +15,12 @@ export class ProfileResponse {
   public age: number = 0;
   public photoUploaded: boolean = false;
   public isCitizen: boolean = false;
+  public donated: boolean = false;
   public balance: number = 0;
   public miningEndTime: number | null = null;
   public miningAmount: number = 0;
   public unreadNews: number = 0;
+  public quentaPath: boolean = false;
 }
 
 export class News {
@@ -28,9 +30,9 @@ export class News {
 }
 
 export class NewsResponse {
-  public news: News[] = [];
+  public news: News[] = []; 
 }
-
+ 
 export class PublicProfile {
   public id: number = 0;
   public firstName: string = '';

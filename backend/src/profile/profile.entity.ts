@@ -37,4 +37,7 @@ export class Profile {
 
   @Column({nullable: true})
   miningTime: Date;
+
+  @Column({default: false})
+  donated: boolean;
 }
