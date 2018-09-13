@@ -5,7 +5,7 @@
     <h5 class="green">Действия с выбранными пользователями ({{ selectedUsers.length }}):</h5>
     <b-button variant="primary" class="mb-2" :disabled="selectedUsers.length === 0" v-b-modal.sendMessageModal>Отправить сообщение</b-button>
 
-    <b-modal id="balanceEditModal" size="sm" hide-header ok-title="Изменить" cancel-title="Отмена" @hidden="balanceEditError = ''" @ok="balanceEditSubmit">
+    <b-modal id="balanceEditModal" class="defaultModal" size="sm" hide-header ok-title="Изменить" cancel-title="Отмена" @hidden="balanceEditError = ''" @ok="balanceEditSubmit">
       <span>Имя: <span class="green">{{ balanceEditUserName }}</span></span><br/>
       <b-form-group
         horizontal
@@ -16,7 +16,7 @@
       </b-form-group>
     </b-modal>
 
-    <b-modal id="sendMessageModal" size="sm" hide-header ok-title="Отправить" cancel-title="Отмена" @ok="sendMessageSubmit">
+    <b-modal id="sendMessageModal" class="defaultModal" size="sm" hide-header ok-title="Отправить" cancel-title="Отмена" @ok="sendMessageSubmit">
       <span>Имена: <span class="green">{{ selectedPlayerNames }}</span></span><br/>
       <b-form-textarea v-model="messageText" placeholder="Введите сообщение" :rows="3" :max-rows="9" style="resize: none;"></b-form-textarea>
     </b-modal>
@@ -193,16 +193,6 @@ export default class MasterUsers extends Vue {
 #master-users th {
   font-weight: normal;
   color: aqua;
-}
-
-#balanceEditModal .modal-content {
-  background-color: #00212F;
-  color: #fff;
-}
-
-#sendMessageModal .modal-content {
-  background-color: #00212F;
-  color: #fff;
 }
 
 .custom-control-inline.no-label {

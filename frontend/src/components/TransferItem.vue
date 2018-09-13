@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="transferItemModal" size="sm" hide-header ok-title="Передать" cancel-title="Отмена" @ok="submit">
+  <b-modal id="transferItemModal" class="defaultModal" size="sm" hide-header ok-title="Передать" cancel-title="Отмена" @ok="submit">
     <span>Имя: <span class="green">{{ userName }}</span></span><br/>
     <b-form-group
       label="Предмет: "
@@ -67,8 +67,5 @@ export default class User extends Vue {
 </script>
 
 <style lang="scss">
-#transferItemModal .modal-content {
-  background-color: #00212F;
-  color: #fff;
-}
+
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="transferMoneyModal" size="sm" hide-header ok-title="Перевести" cancel-title="Отмена" @ok="submit">
+  <b-modal id="transferMoneyModal" class="defaultModal" size="sm" hide-header ok-title="Перевести" cancel-title="Отмена" @ok="submit">
     <span>Имя: <span class="green">{{ userName }}</span></span><br/>
     <b-form-group
       horizontal
@@ -55,8 +55,5 @@ export default class User extends Vue {
 </script>
 
 <style lang="scss">
-#transferMoneyModal .modal-content {
-  background-color: #00212F;
-  color: #fff;
-}
+
 </style>

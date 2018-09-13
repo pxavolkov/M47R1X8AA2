@@ -14,7 +14,7 @@
           <b-form-input id="inputGiveItemAmount" v-model.number="giveItemAmount"></b-form-input>
         </b-form-group>
       </b-modal>
-      <b-modal id="itemModal" :title="itemModal.title" hide-footer>
+      <b-modal id="itemModal" class="defaultModal" :title="itemModal.title" hide-footer>
         <center><img class="item-icon" v-if="itemModal.itemId > -1" :src="getItemIcon(itemModal.itemId)"></center>
         <h3 class="yellow">Описание</h3>
         <p v-html="itemModal.shortDesc"></p>
@@ -192,11 +192,6 @@ img.item-icon {
   flex: 1;
   display: flex;
   align-items: center;
-}
-
-#itemModal .modal-content {
-  background-color: #00212F;
-  color: #fff;
 }
 
 .btn-xs {
