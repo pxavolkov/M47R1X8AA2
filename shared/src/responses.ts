@@ -20,7 +20,7 @@ export class ProfileResponse {
   public miningEndTime: number | null = null;
   public miningAmount: number = 0;
   public unreadNews: number = 0;
-  public quentaPath: boolean = false;
+  public quentaExists: boolean = false;
   public unreadMessages: number = 0;
 }
 

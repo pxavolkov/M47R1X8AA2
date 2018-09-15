@@ -42,6 +42,7 @@ export class ProfileController {
 
     response.unreadNews = await this.newsService.unreadNewsCountByUserId(user.id);
     response.unreadMessages = await this.messageService.unreadCountByUserId(user.id);
+    response.quentaExists = !!profile.quentaPath;
     return response;
   }
 

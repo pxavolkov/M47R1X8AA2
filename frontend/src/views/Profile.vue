@@ -19,7 +19,7 @@
           <div class="fontsize200">Age...{{ profile.age }}</div>
           <div class="fontsize200">Sex...{{ profile.sex === Sex.MALE ? 'M' : 'F' }}</div>
           <div class="fontsize100">
-            <span :class="profile.quentaPath ? 'green' : 'orange'" :title="profile.quentaPath ? 'Квента загружена' : 'Квента не загружена'">Квента</span><br />
+            <span :class="profile.quentaExists ? 'green' : 'orange'" :title="profile.quentaExists ? 'Квента загружена' : 'Квента не загружена'">Квента</span><br />
             <span :class="profile.isCitizen ? 'green' : 'orange'" :title="profile.isCitizen ? 'Доступ к матрице оплачен' : 'Доступ к матрице не оплачен'">Матрица</span><br />
             <span :class="profile.donated ? 'green' : 'orange'" :title="profile.donated ? 'Взнос сдан' : 'Взнос не сдан'">Взнос</span>
           </div>
