@@ -21,7 +21,7 @@
           <div class="fontsize100">
             <span :class="profile.quentaExists ? 'green' : 'orange'" :title="profile.quentaExists ? 'Квента загружена' : 'Квента не загружена'">Квента</span><br />
             <span :class="profile.isCitizen ? 'green' : 'orange'" :title="profile.isCitizen ? 'Доступ к матрице оплачен' : 'Доступ к матрице не оплачен'">Матрица</span><br />
-            <span :class="profile.donated ? 'green' : 'orange'" :title="profile.donated ? 'Взнос сдан' : 'Взнос не сдан'">Взнос</span>
+            <span :class="profile.donated ? 'green' : 'orange'" :title="profile.donated ? 'Взнос сдан' : 'Взнос не сдан'">Полигон</span>
           </div>
           <!--
           <div><br/><br/></div>
