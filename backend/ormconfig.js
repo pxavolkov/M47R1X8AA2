@@ -1,13 +1,13 @@
 const dotenv = require('dotenv');
-const register = require('tsconfig-paths/register');
-const tsConfig = require('../tsconfig.json');
-const fs = require('fs');
+const tscPaths = require('tsconfig-paths');
+const tsConfig = require('./tsconfig.json');
+const path = require('path');
 dotenv.config();
 
 const production = process.env.NODE_ENV === 'production';
 
-const baseUrl = fs.resolve(__dirname, '..', tsConfig.compilerOptions.baseUrl);
-register({
+const baseUrl = path.resolve(__dirname, 'dist/backend', tsConfig.compilerOptions.baseUrl);
+tscPaths.register({
   baseUrl,
   paths: tsConfig.compilerOptions.paths
 });
