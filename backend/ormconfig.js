@@ -1,11 +1,16 @@
 const dotenv = require('dotenv');
+const register = require('tsconfig-paths/register');
+const tsConfig = require('../tsconfig.json');
+const fs = require('fs');
 dotenv.config();
 
 const production = process.env.NODE_ENV === 'production';
-if (production) {
-  const moduleAlias = require('module-alias')
-  moduleAlias.addAlias('@shared', __dirname + '/dist/shared/src');
-}
+
+const baseUrl = fs.resolve(__dirname, '..', tsConfig.compilerOptions.baseUrl);
+register({
+  baseUrl,
+  paths: tsConfig.compilerOptions.paths
+});
 
 function toBoolean(str) {
   return str === 'true' || str === '1';
