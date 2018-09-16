@@ -10,7 +10,7 @@ import { NewsService } from '../news/news.service';
 import { ProfileService } from '../profile/profile.service';
 import { News } from '../news/news.entity';
 import paths from '../paths';
-import { SetBalance, SetCitizen, UploadQuenta, SendMultiMessage, Property as IProperty } from '@shared/master';
+import { SetBalance, SetCitizen, UploadQuenta, SendMultiMessage, Property as IProperty, SetDonated } from '@shared/master';
 import { unlink, rename } from 'fs';
 import { ItemService } from '../item/item.service';
 import { Item } from '../item/item.entity';
@@ -71,6 +71,12 @@ export class MasterController {
     await this.profileService.setCitizen(userId, isCitizen);
     this.eventService.add(user, EventType.SET_CITIZEN, {userId, isCitizen});
     return {userId, isCitizen};
+  }
+
+  @Post('setDonated')
+  async setDonated(@Body() {userId, donated}): Promise<SetDonated> {
+    await this.profileService.setDonated(userId, donated);
+    return {userId, donated};
   }
 
   @Post('updateNews')

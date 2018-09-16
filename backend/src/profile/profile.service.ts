@@ -106,6 +106,10 @@ export class ProfileService {
     await this.profileRepository.update({userId}, {isCitizen});
   }
 
+  async setDonated(userId: number, donated: boolean): Promise<void> {
+    await this.profileRepository.update({userId}, {donated});
+  }
+
   async isCitizen(id: number): Promise<boolean> {
     return (await this.profileRepository.findOneOrFail(id, {select: ['isCitizen']})).isCitizen;
   }

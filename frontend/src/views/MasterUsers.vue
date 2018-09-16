@@ -62,6 +62,10 @@
         <br>
         <b-button class="mt-1" size="sm" variant="primary" :to="'/Messages/' + data.item.id">Сообщения</b-button>
       </template>
+      <template slot="donate" slot-scope="data">
+        <b-button v-if="data.item.profile.donated" size="sm" variant="danger" @click="setDonated(data.item.id, false)">Не оплатил</b-button>
+        <b-button v-else size="sm" variant="success" @click="setDonated(data.item.id, true)">Оплатил</b-button>
+      </template>
     </b-table>
   </div>
 </template>
@@ -108,6 +112,7 @@ export default class MasterUsers extends Vue {
       {key: 'balance', label: 'Баланс'},
       {key: 'quenta', label: 'Квента'},
       {key: 'actions', label: ''},
+      {key: 'donate', label: 'Взнос'},
     ];
   }
 
@@ -145,6 +150,10 @@ export default class MasterUsers extends Vue {
 
   private setCitizen(userId: number, isCitizen: boolean) {
     this.$store.dispatch(`${namespace}/setCitizen`, {data: {userId, isCitizen}});
+  }
+
+  private setDonated(userId: number, donated: boolean) {
+    this.$store.dispatch(`${namespace}/setDonated`, {data: {userId, donated}});
   }
 
   private showAlert(type: string, text: string) {

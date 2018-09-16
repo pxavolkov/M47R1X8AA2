@@ -33,6 +33,7 @@ export class UserService {
       .addSelect('profile.quentaPath')
       .addSelect('profile.isCitizen')
       .addSelect('profile.balance')
+      .addSelect('profile.donated')
       .leftJoin('user.profile', 'profile')
       .getMany();
   }
