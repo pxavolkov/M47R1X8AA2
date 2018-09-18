@@ -10,7 +10,7 @@ import { EventService } from '../event/event.service';
 import { EventType } from '@shared/enums';
 
 @Controller('inventory')
-@UseGuards(AuthGuard('jwt'), new CitizenGuard())
+@UseGuards(AuthGuard('jwt'))
 export class InventoryController {
   private readonly logger = new Logger(InventoryController.name);
   constructor(

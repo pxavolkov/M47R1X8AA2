@@ -190,7 +190,7 @@ export default class Register extends Vue {
       const response = await axios.post('/api/user/register', formData, {headers: {
         'Content-Type': 'multipart/form-data',
       }});
-      this.$router.push('/Account/Approval');
+      this.$router.push('/Profile');
     } catch (err) {
       if (err.response.status === 403) this.errorMessage = 'Такой email уже зарегистрирован';
       else if (err.response.status === 400) this.errorMessage = 'Проверьте правильность ввода всех данных';

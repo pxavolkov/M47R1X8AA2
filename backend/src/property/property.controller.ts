@@ -11,7 +11,7 @@ import { ProfileService } from '../profile/profile.service';
 import { SetProperty } from '@shared/requests';
 
 @Controller('property')
-@UseGuards(AuthGuard('jwt'), new CitizenGuard())
+@UseGuards(AuthGuard('jwt'))
 export class PropertyController {
   private readonly logger = new Logger(PropertyController.name);
   constructor(

@@ -39,4 +39,6 @@ export enum EventType {
 export enum Role {
   Master = 1 << 0,
   Self = 1 << 1,
+  Medic = 1 << 2,
+  Marshal = 1 << 3
 }
