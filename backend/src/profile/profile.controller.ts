@@ -130,7 +130,18 @@ export class ProfileController {
         unreadMessages: unreadMessages[userId] || 0,
       }),
     );
-    return profiles;
+
+    const sorted = profiles.sort((i,j) => {
+      if (i.unreadMessages > j.unreadMessages) return -1; 
+      if (i.unreadMessages < j.unreadMessages) return 1;
+      if (i.firstName.toUpperCase() < j.firstName.toUpperCase()) return -1; 
+      if (i.firstName.toUpperCase() > j.firstName.toUpperCase()) return 1;
+      if (i.lastName.toUpperCase() < j.lastName.toUpperCase()) return -1; 
+      if (i.lastName.toUpperCase() > j.lastName.toUpperCase()) return 1;
+      return 0;
+    });
+    
+    return sorted;
   }
 
   @Post('startMining')

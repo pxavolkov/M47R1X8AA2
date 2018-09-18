@@ -21,10 +21,10 @@
             <b-col cols="3" class="pb-2">
               <div class="green">{{ item.firstName }}</div>
               <div class="green">{{ item.lastName }}</div>
-              <button tag="button" class="btn img-button p-0" @click="showMailAlert">
+              <router-link :to="'/Messages/' + item.id" tag="button" class="btn img-button p-0">
                 <img title="Отправить сообщение" src="@/assets/img/mail.png"/>
                 <NumberBadge class="messagesCount" :value="item.unreadMessages"/>
-              </button>
+              </router-link>
             </b-col>
             <b-col cols="3" style="align-self: flex-end;">
               <button class="btn img-button" v-b-modal.transferItemModal @click="setTransfer(item)">
