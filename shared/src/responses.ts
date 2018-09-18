@@ -31,9 +31,9 @@ export class News {
 }
 
 export class NewsResponse {
-  public news: News[] = []; 
+  public news: News[] = [];
 }
- 
+
 export class PublicProfile {
   public id: number = 0;
   public firstName: string = '';

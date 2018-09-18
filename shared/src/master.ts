@@ -16,7 +16,7 @@ export interface User {
     quentaPath: string | null,
     isCitizen: boolean,
     balance: number,
-    donated: boolean
+    donated: boolean,
   };
 }
 

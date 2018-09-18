@@ -17,14 +17,14 @@ const mutations: MutationTree<MessageState> = {
   },
   SOCKET_MESSAGE(state, data) {
     if (!state.messages[data.fromUserId]) Vue.set(state.messages, data.fromUserId, []);
-    state.messages[data.fromUserId].push(data);
+    state.messages[data.fromUserId].unshift(data);
   },
   loadDialog(state, data) {
     Vue.set(state.messages, data.userId, data.messages);
   },
   addMessage(state, data) {
     if (!state.messages[data.toUserId]) Vue.set(state.messages, data.toUserId, []);
-    state.messages[data.toUserId].push(data);
+    state.messages[data.toUserId].unshift(data);
   },
   addUsers(state, data) {
     for (const user of data) Vue.set(state.users, user.id, user);

@@ -18,6 +18,7 @@ export class MessageService {
       .where(
         '(fromUserId = :user1 AND toUserId = :user2) OR (fromUserId = :user2 AND toUserId = :user1)', {user1, user2}
       )
+      .orderBy("date", "DESC")
       .getMany();
   }
 

@@ -111,6 +111,12 @@ export class ProfileController {
         balanceBefore: balance,
         amount: data.amount
       });
+      
+      const mod = data.amount % 10;
+      const cr = mod == 1 ? " кредит" : (mod < 5 && mod != 0 ? " кредита" : " кредитов");
+      const message = user.profile.firstName + ' ' + user.profile.lastName + ' перевел ' + data.amount + cr;
+      this.messageService.sendNotification(data.userId, message);
+      
       return 'success';
     } else throw new ForbiddenException();
   }
