@@ -12,7 +12,7 @@ import { CitizenGuard } from '../auth/citizen.guard';
 import { MessageService } from 'message/message.service';
 import { TransferMoney } from '@shared/requests';
 import { EventService } from '../event/event.service';
-import { EventType } from '@shared/enums';
+import { EventType, Sex } from '@shared/enums';
 import utils from '../utils';
 
 const objectify = (obj, [k, v]) => ({ ...obj, [k]: v });
@@ -112,9 +112,10 @@ export class ProfileController {
         amount: data.amount
       });
       
+      const who = user.profile.sex === Sex.MALE ? ' перевел ' : ' перевела ';
       const mod = data.amount % 10;
       const cr = mod == 1 ? " кредит" : (mod < 5 && mod != 0 ? " кредита" : " кредитов");
-      const message = user.profile.firstName + ' ' + user.profile.lastName + ' перевел ' + data.amount + cr;
+      const message = user.profile.firstName + ' ' + user.profile.lastName + who + data.amount + cr;
       this.messageService.sendNotification(data.userId, message);
       
       return 'success';
