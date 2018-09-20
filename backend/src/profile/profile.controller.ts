@@ -117,13 +117,13 @@ export class ProfileController {
         balanceBefore: balance,
         amount: data.amount
       });
-      
+
       const who = user.profile.sex === Sex.MALE ? ' перевел ' : ' перевела ';
       const mod = data.amount % 10;
-      const cr = mod == 1 ? " кредит" : (mod < 5 && mod != 0 ? " кредита" : " кредитов");
+      const cr = mod === 1 ? ' кредит' : (mod < 5 && mod !== 0 ? ' кредита' : ' кредитов');
       const message = user.profile.firstName + ' ' + user.profile.lastName + who + data.amount + cr;
       this.messageService.sendNotification(data.userId, message);
-      
+
       return 'success';
     } else throw new ForbiddenException();
   }
@@ -144,16 +144,16 @@ export class ProfileController {
       }),
     );
 
-    const sorted = profiles.sort((i,j) => {
-      if (i.unreadMessages > j.unreadMessages) return -1; 
+    const sorted = profiles.sort((i, j) => {
+      if (i.unreadMessages > j.unreadMessages) return -1;
       if (i.unreadMessages < j.unreadMessages) return 1;
-      if (i.firstName.toUpperCase() < j.firstName.toUpperCase()) return -1; 
+      if (i.firstName.toUpperCase() < j.firstName.toUpperCase()) return -1;
       if (i.firstName.toUpperCase() > j.firstName.toUpperCase()) return 1;
-      if (i.lastName.toUpperCase() < j.lastName.toUpperCase()) return -1; 
+      if (i.lastName.toUpperCase() < j.lastName.toUpperCase()) return -1;
       if (i.lastName.toUpperCase() > j.lastName.toUpperCase()) return 1;
       return 0;
     });
-    
+
     return sorted;
   }
 

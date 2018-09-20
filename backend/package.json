@@ -11,7 +11,8 @@
     "build-win": "rd /s /q dist && tsc",
     "build": "rm -rf dist && tsc",
     "prod": "node dist/backend/src/main.js",
-    "webpack": "webpack --config webpack.config.js"
+    "webpack": "webpack --config webpack.config.js",
+    "tslint": "npx tslint -c tslint.json \"src/**/*.ts\""
   },
   "dependencies": {
     "@nestjs/common": "^5.0.0",
