@@ -41,4 +41,5 @@ export enum Role {
   Self = 1 << 1,
   Medic = 1 << 2,
   Marshal = 1 << 3,
+  All = 1 << 4,
 }

@@ -60,9 +60,10 @@ const router = new Router({
           meta: {requiresNoAuth: true},
         },
         {
-          path: '/Profile',
+          path: '/Profile/:id?',
           name: 'Profile',
           component: Profile,
+          props: true,
           meta: {requiresAuth: true},
         },
         {

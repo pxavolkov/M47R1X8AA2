@@ -1,9 +1,11 @@
 <template>
-  <img v-if="photoUploaded" :src="photoPath" class="avatar-small"/>
-  <div v-else class="avatar-small">
-    <div>^</div>
-    <div>^</div>
-  </div>
+  <router-link :to="'/Profile/' + id">
+    <img v-if="photoUploaded" :src="photoPath" class="avatar-small"/>
+    <div v-else class="avatar-small">
+      <div>^</div>
+      <div>^</div>
+    </div>
+  </router-link>
 </template>
 
 <script lang="ts">

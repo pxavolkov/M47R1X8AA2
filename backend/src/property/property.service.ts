@@ -55,7 +55,7 @@ export class PropertyService {
 
   async getUserValues(userId: number, roles: number, self: boolean = false): Promise<PropertyValueEditable[]> {
     // tslint:disable-next-line no-bitwise
-    const mask = self ? roles | Role.Self : roles;
+    const mask = (self ? roles | Role.Self : roles) | Role.All;
     return (await this.propertyRepository
       .createQueryBuilder('p')
       .select('p.id', 'id')

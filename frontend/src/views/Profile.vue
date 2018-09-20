@@ -16,7 +16,7 @@
           </router-link>
         </b-col>
         <b-col cols="6" sm="6">
-          <div class="fontsize200">Age...{{ profile.age }}</div>
+          <div class="fontsize200">Age...{{ userId ? '?' : profile.age }}</div>
           <div class="fontsize200">Sex...{{ profile.sex === Sex.MALE ? 'M' : 'F' }}</div>
           <div class="fontsize100">
             <span :class="profile.quentaExists ? 'green' : 'orange'" :title="profile.quentaExists ? 'Квента загружена' : 'Квента не загружена'">Квента</span><br />
@@ -36,16 +36,16 @@
 
         <b-col cols="6" sm="6" class="fontsize200">
           <div class="yellow" style="border-top: 1px dashed #0098DA; border-bottom: 1px dashed #0098DA;">
-            <img src="@/assets/img/creditsr.png" />&nbsp;&nbsp;&nbsp;<span id="currentBalance">{{ profile.balance }}</span>
+            <img src="@/assets/img/creditsr.png" />&nbsp;&nbsp;&nbsp;<span id="currentBalance">{{ userId ? '???' : profile.balance }}</span>
           </div>
-          <div class="green" style="border-bottom: 1px dashed #0098DA;">
+          <div :class="{'green': !id, 'disabled': id}" style="border-bottom: 1px dashed #0098DA;">
             <div v-if="miningTimeLeft.length" class="miningTimeLeft"><img src="@/assets/img/miningtimer.png" style="margin-right: 5px;"/>{{ miningTimeLeft }}</div>
-            <div v-else class="col-md-offset-2 text-center green hoverlight miningButton" @click="startMining">
+            <div v-else class="col-md-offset-2 text-center hoverlight miningButton" @click="startMining">
               Mining
             </div>
           </div>
         </b-col>
-        <router-link to="/Shop" tag="b-col" cols="6" sm="6" class="fontsize200 shopButton">
+        <router-link to="/Shop" tag="b-col" cols="6" sm="6" class="fontsize200 shopButton" :class="{'disabled': id}">
           <img src="@/assets/img/shopr.png" class="imgButton"/>
         </router-link>
 
@@ -76,6 +76,7 @@ const namespace: string = 'profile';
 
 @Component({components: {NumberBadge}})
 export default class Profile extends Vue {
+  @Prop(String) private id?: string;
   @State((state) => state.profile.profile) private profile!: ProfileResponse | null;
   @Getter('isProfileLoaded', { namespace }) private isLoaded!: boolean;
   @Action('startMining', { namespace }) private startMiningAction!: () => Promise<{data: StartMiningResponse}>;
@@ -91,12 +92,23 @@ export default class Profile extends Vue {
     return this.profile ? '/api/photo/' + this.profile.id + '.png' : '';
   }
 
-  public beforeCreate() {
-    this.$store.dispatch(`${namespace}/load`).then(() => this.onTick());
+  private get userId() {
+    return this.id ? parseInt(this.id, 10) : null;
   }
 
   public created() {
-    this.interval = window.setInterval(this.onTick, 1000);
+    this.$store.dispatch(`${namespace}/load`, {params: {userId: this.userId}})
+      .then(() => {
+        this.onTick();
+        this.interval = window.setInterval(this.onTick, 1000);
+      })
+      .catch((err) => {
+      if (err.response.status === 500) {
+        this.showAlert('danger', 'Ошибка при загрузке профиля. Обратитесь к администрации');
+      } else if (err.response.status !== 401) {
+        this.showAlert('danger', `Ошибка при загрузке профиля (${err.response.status})`);
+      }
+    });
   }
 
   public beforeDestroy() {
@@ -213,5 +225,16 @@ export default class Profile extends Vue {
   display: block;
   margin: 0 auto;
   padding: 5px;
+}
+
+.disabled {
+  color: grey;
+  pointer-events: none;
+  img {
+    filter: grayscale(1);
+  }
+  &.shopButton, .miningButton {
+    border: 2px solid grey;
+  }
 }
 </style>

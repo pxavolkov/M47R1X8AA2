@@ -11,6 +11,7 @@ const profile = new Vapi({
     action: 'load',
     property: 'profile',
     path: '/load',
+    queryParams: true,
   })
   .get({
     action: 'list',

@@ -28,8 +28,9 @@ export class ProfileService {
     return await this.profileRepository.save(profile);
   }
 
-  async findByUser(user: User): Promise<Profile> {
-    return await this.profileRepository.findOneOrFail({user});
+  async findByUser(user: User | number): Promise<Profile> {
+    if (typeof(user) === 'number') return await this.profileRepository.findOneOrFail({userId: user});
+    else return await this.profileRepository.findOneOrFail({user});
   }
 
   async remove(profile: Profile): Promise<Profile> {

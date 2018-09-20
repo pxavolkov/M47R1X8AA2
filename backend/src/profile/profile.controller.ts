@@ -1,5 +1,5 @@
 import { Controller, Get, Post, UseGuards, UploadedFile, FileInterceptor, Request,
-        UseInterceptors, Body, ForbiddenException, BadRequestException} from '@nestjs/common';
+        UseInterceptors, Body, ForbiddenException, BadRequestException, Query} from '@nestjs/common';
 import { Logger } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { rename, unlink} from 'fs';
@@ -29,19 +29,25 @@ export class ProfileController {
 
   @Get('load')
   @UseGuards(AuthGuard('jwt'))
-  async load(@Request() {user}): Promise<ProfileResponse> {
-    const profile = await this.profileService.findByUser(user); // TODO: select only needed columns
+  async load(@Request() {user}, @Query('userId') userId): Promise<ProfileResponse> {
+    if (userId) userId = parseInt(userId, 10);
+    const profile = userId ? await this.profileService.findByUser(userId) : user.profile;
     const response = new ProfileResponse();
-    response.id = user.id;
+    response.id = userId || user.id;
     for (const p in response) response[p] = (p in profile ? profile : response)[p];
 
-    response.miningEndTime = profile.miningTime ?
+    response.miningEndTime = !userId && profile.miningTime ?
       profile.miningTime.getTime() + parseInt(process.env.MINING_TIME_MS, 10) :
       null;
     response.miningAmount = parseInt(process.env.MINING_AMOUNT, 10);
 
-    response.unreadNews = await this.newsService.unreadNewsCountByUserId(user.id);
-    response.unreadMessages = await this.messageService.unreadCountByUserId(user.id);
+    if (userId) {
+      response.balance = 0;
+      response.age = 0;
+    }
+
+    response.unreadNews = userId ? 0 : await this.newsService.unreadNewsCountByUserId(user.id);
+    response.unreadMessages = userId ? 0 : await this.messageService.unreadCountByUserId(user.id);
     response.quentaExists = !!profile.quentaPath;
     return response;
   }
