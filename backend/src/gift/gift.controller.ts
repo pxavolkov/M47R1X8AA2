@@ -47,27 +47,39 @@ export class GiftController {
 
     if (data.creditsBonus) {
       await this.profileService.addMoney(userId, data.creditsBonus);
-      this.eventService.add(user.id, EventType.GIFT_CREDITS, {id: data.id, userId, creditsBonus: data.creditsBonus});
+      try {
+        await this.eventService.add(user.id, EventType.GIFT_CREDITS, {
+          id: data.id,
+          userId,
+          creditsBonus: data.creditsBonus
+        });
+      } catch (e) {}
     }
     if (data.itemId) {
       await this.inventoryService.addItem(userId, data.itemId, data.itemAmount);
-      this.eventService.add(
-        user.id,
-        EventType.GIFT_ITEM,
-        {id: data.id, userId, itemId: data.itemId, itemAmount: data.itemAmount}
-      );
+      try {
+        await this.eventService.add(
+          user.id,
+          EventType.GIFT_ITEM,
+          {id: data.id, userId, itemId: data.itemId, itemAmount: data.itemAmount}
+        );
+      } catch (e) {}
     }
     if (data.propertyId) {
       await this.propertyService.setValue(data.propertyId, userId, data.propertyValue);
-      this.eventService.add(
-        user.id,
-        EventType.GIFT_PROPERTY,
-        {id: data.id, userId, propertyId: data.propertyId, propertyValue: data.propertyValue}
-      );
+      try {
+        await this.eventService.add(
+          user.id,
+          EventType.GIFT_PROPERTY,
+          {id: data.id, userId, propertyId: data.propertyId, propertyValue: data.propertyValue}
+        );
+      } catch (e) {}
     }
 
     await this.giftService.activate(data.id, user.id);
-    this.eventService.add(user.id, EventType.GIFT_ACTIVATE, {id: data.id, userId});
+    try {
+      await this.eventService.add(user.id, EventType.GIFT_ACTIVATE, {id: data.id, userId});
+    } catch (e) {}
 
     const response = {};
     for (const key of ['creditsBonus', 'item', 'itemId', 'itemAmount', 'property', 'propertyId', 'propertyValue']) {
