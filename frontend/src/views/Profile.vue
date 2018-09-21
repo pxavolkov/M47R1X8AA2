@@ -16,7 +16,7 @@
           </router-link>
         </b-col>
         <b-col cols="6" sm="6">
-          <div class="fontsize200">Age...{{ userId ? '?' : profile.age }}</div>
+          <div class="fontsize200">Age...{{ profile.age !== null ? profile.age : '?' }}</div>
           <div class="fontsize200">Sex...{{ profile.sex === Sex.MALE ? 'M' : 'F' }}</div>
           <div class="fontsize100">
             <span :class="profile.quentaExists ? 'green' : 'orange'" :title="profile.quentaExists ? 'Квента загружена' : 'Квента не загружена'">Квента</span><br />
@@ -36,7 +36,7 @@
 
         <b-col cols="6" sm="6" class="fontsize200">
           <div class="yellow" style="border-top: 1px dashed #0098DA; border-bottom: 1px dashed #0098DA;">
-            <img src="@/assets/img/creditsr.png" />&nbsp;&nbsp;&nbsp;<span id="currentBalance">{{ userId ? '???' : profile.balance }}</span>
+            <img src="@/assets/img/creditsr.png" />&nbsp;&nbsp;&nbsp;<span id="currentBalance">{{ profile.balance !== null ? profile.balance : '???' }}</span>
           </div>
           <div :class="{'green': !id, 'disabled': id}" style="border-bottom: 1px dashed #0098DA;">
             <div v-if="miningTimeLeft.length" class="miningTimeLeft"><img src="@/assets/img/miningtimer.png" style="margin-right: 5px;"/>{{ miningTimeLeft }}</div>

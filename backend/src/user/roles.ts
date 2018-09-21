@@ -16,6 +16,10 @@ export class Roles extends Number {
     return this.has(roles.reduce((acc, v) => acc & v, 0));
   }
 
+  hasAny(roles: Role[]): boolean {
+    return this.has(roles.reduce((acc, v) => acc | v, 0));
+  }
+
   toNumber(): number {
     return Number(this);
   }

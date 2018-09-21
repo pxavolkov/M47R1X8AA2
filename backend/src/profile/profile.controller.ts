@@ -12,8 +12,9 @@ import { CitizenGuard } from '../auth/citizen.guard';
 import { MessageService } from 'message/message.service';
 import { TransferMoney } from '@shared/requests';
 import { EventService } from '../event/event.service';
-import { EventType, Sex } from '@shared/enums';
+import { EventType, Sex, Role } from '@shared/enums';
 import utils from '../utils';
+import { User } from 'user/user.entity';
 
 const objectify = (obj, [k, v]) => ({ ...obj, [k]: v });
 
@@ -29,23 +30,24 @@ export class ProfileController {
 
   @Get('load')
   @UseGuards(AuthGuard('jwt'))
-  async load(@Request() {user}, @Query('userId') userId): Promise<ProfileResponse> {
+  async load(@Request() {user}: {user: User}, @Query('userId') userId): Promise<ProfileResponse> {
     if (userId) userId = parseInt(userId, 10);
     const profile = userId ? await this.profileService.findByUser(userId) : user.profile;
+    const isMaster = user.roles.has(Role.Master);
     const response = new ProfileResponse();
     response.id = userId || user.id;
     for (const p in response) response[p] = (p in profile ? profile : response)[p];
 
-    response.miningEndTime = !userId && profile.miningTime ?
+    response.miningEndTime = (!userId || isMaster) && profile.miningTime ?
       profile.miningTime.getTime() + parseInt(process.env.MINING_TIME_MS, 10) :
       null;
     response.miningAmount = parseInt(process.env.MINING_AMOUNT, 10);
 
-    if (userId) {
-      response.balance = 0;
-      response.age = 0;
-      this.eventService.add(user.id, EventType.PROFILE_VIEW, {userId, role: user.role});
+    if (!user.roles.has(Role.Marshal) && !isMaster) {
+      response.balance = null;
+      response.age = null;
     }
+    if (userId) this.eventService.add(user.id, EventType.PROFILE_VIEW, {userId, roles: user.roles.toNumber()});
 
     response.unreadNews = userId ? 0 : await this.newsService.unreadNewsCountByUserId(user.id);
     response.unreadMessages = userId ? 0 : await this.messageService.unreadCountByUserId(user.id);

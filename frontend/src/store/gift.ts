@@ -22,9 +22,8 @@ const gift = new Vapi({
 
 const getters = {
   isLoaded: (state: any) => !state.pending.gift && !state.error.gift,
-  isCodeValid: (state: any) => !state.pending.gift && !state.error.gift && state.gift.isCodeValid,
+  isCodeValid: (state: any) => !state.pending.gift && !state.error.gift && state.gift && state.gift.isCodeValid,
   isActivated: (state: any) => !state.pending.activate && !state.error.actvate && !!state.activated,
-  isWrongCode: (state: any) => !state.pending.gift && state.error.gift,
 };
 
 Object.assign(gift, {getters});
