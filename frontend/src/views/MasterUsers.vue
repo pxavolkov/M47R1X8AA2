@@ -55,8 +55,9 @@
         </div>
       </template>
       <template slot="actions" slot-scope="data">
-        <b-button v-if="data.item.profile.isCitizen" size="sm" variant="danger" @click="setCitizen(data.item.id, false)">Выключить</b-button>
-        <b-button v-else size="sm" variant="success" @click="setCitizen(data.item.id, true)">Включить</b-button>
+        <ProfileSwitch title="Гражданин" action="setCitizen" property="isCitizen" :userId="data.item.id" :value="data.item.profile.isCitizen" class="mt-1"/>
+        <ProfileSwitch title="Смерть" action="setDead" property="dead" :userId="data.item.id" :value="data.item.profile.dead" class="mt-1"/>
+        <ProfileSwitch title="Ранение" action="setInjured" property="injured" :userId="data.item.id" :value="data.item.profile.injured" class="mt-1"/>
         <br>
         <b-button class="mt-1" size="sm" variant="primary" :to="'Inventory/' + data.item.id">Инвентарь</b-button>
         <br>
@@ -76,10 +77,11 @@ import { State, Getter, Action } from 'vuex-class';
 import { Sex } from 'shared/enums';
 import { User, SetBalance, SendMultiMessage } from 'shared/master';
 import utils from '@/utils';
+import ProfileSwitch from '@/components/ProfileSwitch.vue';
 
 const namespace: string = 'master';
 
-@Component
+@Component({components: {ProfileSwitch}})
 export default class MasterUsers extends Vue {
   @State((state) => state.master.users) private users!: User[];
   @Getter('isUsersLoaded', { namespace }) private isLoaded!: boolean;
@@ -156,6 +158,14 @@ export default class MasterUsers extends Vue {
     this.$store.dispatch(`${namespace}/setDonated`, {data: {userId, donated}});
   }
 
+  private setDead(userId: number, dead: boolean) {
+    this.$store.dispatch(`${namespace}/setDead`, {data: {userId, dead}});
+  }
+
+  private setInjured(userId: number, injured: boolean) {
+    this.$store.dispatch(`${namespace}/setInjured`, {data: {userId, injured}});
+  }
+
   private showAlert(type: string, text: string) {
     this.$store.commit('alert/show', {type, text});
   }
@@ -194,6 +204,10 @@ export default class MasterUsers extends Vue {
       .catch((err: any) => {
         this.showAlert('danger', `Ошибка при загрузке квенты (${err.response.status})`);
       });
+  }
+
+  private switchVariant(value: boolean) {
+    return value ? 'danger' : 'success';
   }
 }
 </script>

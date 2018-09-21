@@ -40,4 +40,10 @@ export class Profile {
 
   @Column({default: false})
   donated: boolean;
+
+  @Column({default: false})
+  dead: boolean;
+
+  @Column({default: false})
+  injured: boolean;
 }

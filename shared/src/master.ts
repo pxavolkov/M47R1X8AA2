@@ -17,6 +17,8 @@ export interface User {
     isCitizen: boolean,
     balance: number,
     donated: boolean,
+    dead: boolean,
+    injured: boolean,
   };
 }
 
@@ -35,6 +37,16 @@ export interface SetCitizen {
 export interface SetDonated {
   userId: number;
   donated: boolean;
+}
+
+export interface SetDead {
+  userId: number;
+  dead: boolean;
+}
+
+export interface SetInjured {
+  userId: number;
+  injured: boolean;
 }
 
 export interface SetBalance {

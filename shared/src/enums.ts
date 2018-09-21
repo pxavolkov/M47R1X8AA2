@@ -30,6 +30,9 @@ export enum EventType {
   ITEM_EDIT = 'ITEM_EDIT', // {id:number,old:{title:string,shortDesc:string,longDesc:string,icon:{size:number,hash:string}},new:{title:string,shortDesc:string,longDesc:string,icon:{size:number,hash:string}}}
   PROPERTY_ADD = 'PROP_ADD', // {id:number,name:string,viewRoles:number,editRoles:number}
   PROPERTY_EDIT = 'PROP_EDIT', // {id:number,old:{name:string,viewRoles:number,editRoles:number},new:{name:string,viewRoles:number,editRoles:number}}
+  SET_DONATED = 'SET_DONATED', // {userId:number,donated:boolean}
+  SET_DEAD = 'SET_DEAD', // {userId:number,dead:boolean}
+  SET_INJURED = 'SET_INJURED', // {userId:number,injured:boolean}
 
   VALUE_EDIT = 'VALUE_EDIT', // {propertyId:number,userId:number,old:{value:string},new:{value:string}}
   PROFILE_VIEW = 'PROFILE_VIEW', // {userId:number,role:Role}

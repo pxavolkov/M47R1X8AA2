@@ -1,6 +1,7 @@
 import Vapi from 'vuex-rest-api';
 import { MasterState, GeneratedMasterState } from '@/store/types';
-import { SetDonated, SetCitizen, News, SetBalance, UploadQuenta, Item, Property } from 'shared/master';
+import { SetDonated, SetCitizen, News, SetBalance, UploadQuenta, Item, Property, SetDead,
+  SetInjured } from 'shared/master';
 import { InventoryItem, InventoryItemAmount } from 'shared/responses';
 import Vue from 'vue';
 
@@ -59,6 +60,22 @@ const master = new Vapi({
     onSuccess: (state: MasterState, payload: {data: SetDonated}) => {
       const user = state.users.find((v) => v.id === payload.data.userId);
       if (user) user.profile.donated = payload.data.donated;
+    },
+  })
+  .post({
+    action: 'setDead',
+    path: '/setDead',
+    onSuccess: (state: MasterState, payload: {data: SetDead}) => {
+      const user = state.users.find((v) => v.id === payload.data.userId);
+      if (user) user.profile.dead = payload.data.dead;
+    },
+  })
+  .post({
+    action: 'setInjured',
+    path: '/setInjured',
+    onSuccess: (state: MasterState, payload: {data: SetInjured}) => {
+      const user = state.users.find((v) => v.id === payload.data.userId);
+      if (user) user.profile.injured = payload.data.injured;
     },
   })
   .post({

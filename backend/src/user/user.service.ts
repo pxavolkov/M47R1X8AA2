@@ -34,6 +34,8 @@ export class UserService {
       .addSelect('profile.isCitizen')
       .addSelect('profile.balance')
       .addSelect('profile.donated')
+      .addSelect('profile.dead')
+      .addSelect('profile.injured')
       .leftJoin('user.profile', 'profile')
       .getMany();
   }

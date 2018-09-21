@@ -111,6 +111,14 @@ export class ProfileService {
     await this.profileRepository.update({userId}, {donated});
   }
 
+  async setDead(userId: number, dead: boolean): Promise<void> {
+    await this.profileRepository.update({userId}, {dead});
+  }
+
+  async setInjured(userId: number, injured: boolean): Promise<void> {
+    await this.profileRepository.update({userId}, {injured});
+  }
+
   async isCitizen(id: number): Promise<boolean> {
     return (await this.profileRepository.findOneOrFail(id, {select: ['isCitizen']})).isCitizen;
   }

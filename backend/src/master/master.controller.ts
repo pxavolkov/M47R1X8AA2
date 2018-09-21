@@ -11,8 +11,8 @@ import { ProfileService } from '../profile/profile.service';
 import { News } from '../news/news.entity';
 import paths from '../paths';
 import { SetBalance, SetCitizen, UploadQuenta, SendMultiMessage, Property as IProperty,
-  SetDonated } from '@shared/master';
-import { unlink, rename } from 'fs';
+  SetDonated, SetDead, SetInjured} from '@shared/master';
+import { unlink } from 'fs';
 import { ItemService } from '../item/item.service';
 import { Item } from '../item/item.entity';
 import { InventoryService } from '../inventory/inventory.service';
@@ -75,9 +75,24 @@ export class MasterController {
   }
 
   @Post('setDonated')
-  async setDonated(@Body() {userId, donated}): Promise<SetDonated> {
+  async setDonated(@Request() {user}, @Body() {userId, donated}): Promise<SetDonated> {
     await this.profileService.setDonated(userId, donated);
+    this.eventService.add(user, EventType.SET_DONATED, {userId, donated});
     return {userId, donated};
+  }
+
+  @Post('setDead')
+  async setDead(@Request() {user}, @Body() {userId, dead}): Promise<SetDead> {
+    await this.profileService.setDead(userId, dead);
+    this.eventService.add(user, EventType.SET_DEAD, {userId, dead});
+    return {userId, dead};
+  }
+
+  @Post('setInjured')
+  async setInjured(@Request() {user}, @Body() {userId, injured}): Promise<SetInjured> {
+    await this.profileService.setInjured(userId, injured);
+    this.eventService.add(user, EventType.SET_INJURED, {userId, injured});
+    return {userId, injured};
   }
 
   @Post('updateNews')
