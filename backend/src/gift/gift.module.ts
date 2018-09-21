@@ -6,9 +6,10 @@ import { GiftController } from './gift.controller';
 import { ProfileModule } from '../profile/profile.module';
 import { InventoryModule } from '../inventory/inventory.module';
 import { PropertyModule } from '../property/property.module';
+import { EventModule } from '../event/event.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Gift]), ProfileModule, InventoryModule, PropertyModule],
+  imports: [TypeOrmModule.forFeature([Gift]), ProfileModule, InventoryModule, PropertyModule, EventModule],
   providers: [GiftService],
   controllers: [GiftController],
   exports: [GiftService],
