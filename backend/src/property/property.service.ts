@@ -53,6 +53,14 @@ export class PropertyService {
     return await this.valueRepository.save(item);
   }
 
+  async setValue(propertyId: number, userId: number, value: string): Promise<void> {
+    try {
+      await this.addValue(propertyId, userId, value);
+    } catch (e) {
+      await this.updateValue(propertyId, userId, value);
+    }
+  }
+
   async getUserValues(userId: number, roles: number, self: boolean = false): Promise<PropertyValueEditable[]> {
     // tslint:disable-next-line no-bitwise
     const mask = (self ? roles | Role.Self : roles) | Role.All;

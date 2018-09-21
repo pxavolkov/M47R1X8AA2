@@ -83,3 +83,8 @@ export interface SetProperty {
   propertyId: number;
   value: string;
 }
+
+export interface ActivateCode {
+  userId: number;
+  code: string;
+}

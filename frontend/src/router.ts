@@ -20,6 +20,7 @@ import MasterItems from './views/MasterItems.vue';
 import Inventory from './views/Inventory.vue';
 import MasterProperties from './views/MasterProperties.vue';
 import Properties from './views/Properties.vue';
+import Gift from './views/Gift.vue';
 
 Vue.use(Router);
 
@@ -107,6 +108,13 @@ const router = new Router({
           path: '/Info/:id?',
           name: 'Properties',
           component: Properties,
+          props: true,
+          meta: {requiresAuth: true},
+        },
+        {
+          path: '/Gift/:code',
+          name: 'Gift',
+          component: Gift,
           props: true,
           meta: {requiresAuth: true},
         },

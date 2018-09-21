@@ -1,4 +1,5 @@
 import { Sex } from './enums';
+import { Property } from './master';
 
 export class LoginResponse {
   public constructor(
@@ -89,4 +90,14 @@ export interface PropertyValueEditable {
 export interface PropertiesResponse {
   profile: PublicProfile;
   list: PropertyValueEditable[];
+}
+
+export interface ActivateResponse {
+  creditsBonus: number;
+  item: Item;
+  itemId: number;
+  itemAmount: number;
+  property: Property;
+  propertyId: number;
+  propertyValue: string;
 }
