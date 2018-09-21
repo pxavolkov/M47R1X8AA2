@@ -44,6 +44,7 @@ export class ProfileController {
     if (userId) {
       response.balance = 0;
       response.age = 0;
+      this.eventService.add(user.id, EventType.PROFILE_VIEW, {userId, role: user.role});
     }
 
     response.unreadNews = userId ? 0 : await this.newsService.unreadNewsCountByUserId(user.id);

@@ -7,6 +7,8 @@ import { ActivateResponse } from '@shared/responses';
 import { ProfileService } from '../profile/profile.service';
 import { InventoryService } from '../inventory/inventory.service';
 import { PropertyService } from 'property/property.service';
+import { EventService } from 'event/event.service';
+import { EventType } from '@shared/enums';
 
 @Controller('gift')
 @UseGuards(AuthGuard('jwt'))
@@ -17,12 +19,15 @@ export class GiftController {
     private readonly profileService: ProfileService,
     private readonly inventoryService: InventoryService,
     private readonly propertyService: PropertyService,
+    private readonly eventService: EventService,
   ) {}
 
   @Get('load')
   async load(@Request() {user}, @Query() {code}): Promise<any> {
+    const isCodeValid = await this.giftService.isCodeValid(code);
+    this.eventService.add(user.id, EventType.GIFT_CHECK, {code});
     return {
-      isCodeValid: await this.giftService.isCodeValid(code),
+      isCodeValid,
       profile: {
         id: user.id,
         firstName: user.profile.firstName,
@@ -40,11 +45,29 @@ export class GiftController {
 
     if (data.usedUserId) throw new BadRequestException();
 
-    if (data.creditsBonus) await this.profileService.addMoney(userId, data.creditsBonus);
-    if (data.itemId) await this.inventoryService.addItem(userId, data.itemId, data.itemAmount);
-    if (data.propertyId) await this.propertyService.setValue(data.propertyId, userId, data.propertyValue);
+    if (data.creditsBonus) {
+      await this.profileService.addMoney(userId, data.creditsBonus);
+      this.eventService.add(user.id, EventType.GIFT_CREDITS, {id: data.id, userId, creditsBonus: data.creditsBonus});
+    }
+    if (data.itemId) {
+      await this.inventoryService.addItem(userId, data.itemId, data.itemAmount);
+      this.eventService.add(
+        user.id,
+        EventType.GIFT_ITEM,
+        {id: data.id, userId, itemId: data.itemId, itemAmount: data.itemAmount}
+      );
+    }
+    if (data.propertyId) {
+      await this.propertyService.setValue(data.propertyId, userId, data.propertyValue);
+      this.eventService.add(
+        user.id,
+        EventType.GIFT_PROPERTY,
+        {id: data.id, userId, propertyId: data.propertyId, propertyValue: data.propertyValue}
+      );
+    }
 
     await this.giftService.activate(data.id, user.id);
+    this.eventService.add(user.id, EventType.GIFT_ACTIVATE, {id: data.id, userId});
 
     const response = {};
     for (const key of ['creditsBonus', 'item', 'itemId', 'itemAmount', 'property', 'propertyId', 'propertyValue']) {

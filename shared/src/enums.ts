@@ -32,6 +32,12 @@ export enum EventType {
   PROPERTY_EDIT = 'PROP_EDIT', // {id:number,old:{name:string,viewRoles:number,editRoles:number},new:{name:string,viewRoles:number,editRoles:number}}
 
   VALUE_EDIT = 'VALUE_EDIT', // {propertyId:number,userId:number,old:{value:string},new:{value:string}}
+  PROFILE_VIEW = 'PROFILE_VIEW', // {userId:number,role:Role}
+  GIFT_CHECK = 'GIFT_CHECK', // {code:string,isCodeValid:boolean}
+  GIFT_CREDITS = 'GIFT_CREDITS', // {id:number,userId:number,creditsBonus:number}
+  GIFT_ITEM = 'GIFT_ITEM', // {id:number,userId:number,itemId:number,itemAmount:number}
+  GIFT_PROPERTY = 'GIFT_PROPERTY', // {id:number,userId:number,propertyId:number,propertyValue:string}
+  GIFT_ACTIVATE = 'GIFT_ACTIVATE', // {id:number,userId:number}
 }
 // tslint:enable max-line-length
 
