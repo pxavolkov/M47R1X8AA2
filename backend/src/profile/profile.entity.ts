@@ -46,4 +46,7 @@ export class Profile {
 
   @Column({default: false})
   injured: boolean;
+
+  @Column({nullable: true})
+  bandid: string;
 }
