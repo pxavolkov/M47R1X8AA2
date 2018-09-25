@@ -15,6 +15,7 @@ import { MasterModule } from '../master/master.module';
 import { MessageModule } from '../message/message.module';
 import { ItemModule } from '../item/item.module';
 import { InventoryModule } from '../inventory/inventory.module';
+import { KbModule } from '../kb/kb.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { InventoryModule } from '../inventory/inventory.module';
     MessageModule,
     ItemModule,
     InventoryModule,
+    KbModule,
   ],
   controllers: [AppController],
 })

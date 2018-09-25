@@ -58,7 +58,7 @@ body {
   color: #0098DA;
 }
 
-.green {
+.green, .text-green {
   color: #9DD3AF;
 }
 

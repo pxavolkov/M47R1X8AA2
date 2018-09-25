@@ -101,3 +101,29 @@ export interface ActivateResponse {
   propertyId: number;
   propertyValue: string;
 }
+
+export interface KbServer {
+  id: number;
+  name: string;
+  description: string;
+  hasAccess?: boolean;
+  needPassword?: boolean;
+  correctPassword?: boolean;
+}
+
+export interface KbEntry {
+  id: number;
+  key: string;
+  needPassword: boolean;
+  hasAccess: boolean;
+  text?: string;
+  link?: string;
+  correctPassword?: boolean;
+  encrypted?: boolean;
+  decrypted?: boolean;
+}
+
+export interface KbEntriesResponse {
+  server: KbServer;
+  entries: KbEntry[];
+}

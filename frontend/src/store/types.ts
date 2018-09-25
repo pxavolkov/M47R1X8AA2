@@ -1,4 +1,4 @@
-import { Message, PublicProfile, InventoryItem, PropertyValueEditable } from 'shared/responses';
+import { Message, PublicProfile, InventoryItem, PropertyValueEditable, KbServer, KbEntry } from 'shared/responses';
 import { User, News, Item, Property } from 'shared/master';
 
 export interface RootState {
@@ -75,4 +75,30 @@ export interface InventoryState {
 export interface PropertyState {
   list: PropertyValueEditable[];
   profile: PublicProfile;
+}
+
+export interface KbState {
+  servers: KbServer[];
+  entries: KbEntry[];
+  entry: KbEntry;
+  server: KbStateServer;
+}
+
+export interface KbStateServer extends KbServer {
+  password: null | string;
+}
+
+export interface KbGeneratedState {
+  pending: {
+    servers: boolean,
+    entries: boolean,
+    server: boolean,
+    entry: boolean,
+  };
+  error: {
+    servers: boolean,
+    entries: boolean,
+    server: boolean,
+    entry: boolean,
+  };
 }

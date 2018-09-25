@@ -3,7 +3,7 @@ import { Controller, Get, UseGuards, Body, Post, UseInterceptors, FileIntercepto
 import { Logger } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../auth/roles.guard';
-import { Role } from '../user/roles';
+import { Role, Roles } from '../user/roles';
 import { UserService } from '../user/user.service';
 import { User } from '../user/user.entity';
 import { NewsService } from '../news/news.service';
@@ -218,10 +218,8 @@ export class MasterController {
 
   @Post('updateProperty')
   async updateProperty(@Request() {user}, @Body() data: IProperty): Promise<any> {
-    // tslint:disable-next-line no-bitwise
-    data.editRoles |= Role.Master;
-    // tslint:disable-next-line no-bitwise
-    data.viewRoles |= Role.Master;
+    data.editRoles = new Roles(data.editRoles).addMaster().toNumber();
+    data.viewRoles = new Roles(data.viewRoles).addMaster().toNumber();
     const {id: oldId, ...oldValues} = await this.propertyService.getPropertyById(data.id);
     const {id, ...values} = data;
 
@@ -238,10 +236,8 @@ export class MasterController {
 
   @Post('addProperty')
   async addProperty(@Request() {user}, @Body() data: IProperty): Promise<Property> {
-    // tslint:disable-next-line no-bitwise
-    data.editRoles |= Role.Master;
-    // tslint:disable-next-line no-bitwise
-    data.viewRoles |= Role.Master;
+    data.editRoles = new Roles(data.editRoles).addMaster().toNumber();
+    data.viewRoles = new Roles(data.viewRoles).addMaster().toNumber();
     const property = await this.propertyService.addProperty(data);
     this.eventService.add(user, EventType.PROPERTY_ADD, property);
     return property;

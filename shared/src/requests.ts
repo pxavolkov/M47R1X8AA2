@@ -88,3 +88,18 @@ export interface ActivateCode {
   userId: number;
   code: string;
 }
+
+export interface LoadServer {
+  serverId?: number;
+  serverName?: string;
+  serverPassword: string;
+}
+
+export interface LoadEntry {
+  id?: number;
+  serverId?: number;
+  serverPassword?: string;
+  entryKey?: string;
+  entryPassword?: string;
+  decryptionKey?: string;
+}

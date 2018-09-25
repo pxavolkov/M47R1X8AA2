@@ -11,6 +11,7 @@ import { message } from './message';
 import { inventory } from './inventory';
 import { property } from './property';
 import { gift } from './gift';
+import { kb } from './kb';
 
 Vue.use(Vuex);
 
@@ -25,6 +26,7 @@ const store = new Vuex.Store({
     inventory: Object.assign({namespaced: true}, inventory),
     property: Object.assign({namespaced: true}, property),
     gift: Object.assign({namespaced: true}, gift),
+    kb: Object.assign({namespaced: true}, kb),
   },
 });
 

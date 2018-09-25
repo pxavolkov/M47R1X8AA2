@@ -21,6 +21,8 @@ import Inventory from './views/Inventory.vue';
 import MasterProperties from './views/MasterProperties.vue';
 import Properties from './views/Properties.vue';
 import Gift from './views/Gift.vue';
+import KbServers from './views/KbServers.vue';
+import KbEntries from './views/KbEntries.vue';
 
 Vue.use(Router);
 
@@ -115,6 +117,19 @@ const router = new Router({
           path: '/Gift/:code',
           name: 'Gift',
           component: Gift,
+          props: true,
+          meta: {requiresAuth: true},
+        },
+        {
+          path: '/Kb',
+          name: 'Kb',
+          component: KbServers,
+          meta: {requiresAuth: true},
+        },
+        {
+          path: '/Kb/:id',
+          name: 'KbEntries',
+          component: KbEntries,
           props: true,
           meta: {requiresAuth: true},
         },

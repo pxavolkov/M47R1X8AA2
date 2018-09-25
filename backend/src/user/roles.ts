@@ -8,20 +8,38 @@ const roleValues: number[] = Object.keys(Role)
   .map(k => Role[k as any]) as any;
 
 export class Roles extends Number {
-  has(role: Role): boolean {
-    return ((this as any) & role) === role;
+  has(role: Role | Roles | number): boolean {
+    return ((this as any) & (role as number)) === role;
   }
 
+  intersects(role: Role | Roles | number): boolean {
+    return ((this as any) & (role as number)) > 0;
+  }
+
+  // this has all roles from array
   hasAll(roles: Role[]): boolean {
-    return this.has(roles.reduce((acc, v) => acc & v, 0));
+    return this.has(roles.reduce((acc, v) => acc | v, 0));
   }
 
+  // this has any role from array
   hasAny(roles: Role[]): boolean {
-    return this.has(roles.reduce((acc, v) => acc | v, 0));
+    return this.intersects(roles.reduce((acc, v) => acc | v, 0));
   }
 
   toNumber(): number {
     return Number(this);
+  }
+
+  addSelf(): Roles {
+    return new Roles((this as any) | Role.Self);
+  }
+
+  addAll(): Roles {
+    return new Roles((this as any) | Role.All);
+  }
+
+  addMaster(): Roles {
+    return new Roles((this as any) | Role.Master);
   }
 }
 
