@@ -27,4 +27,7 @@ export class KbServer {
 
   @CreateDateColumn()
   creationDate: Date;
+
+  @Column({default: 0})
+  hackDefense: number;
 }

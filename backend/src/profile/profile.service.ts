@@ -138,4 +138,8 @@ export class ProfileService {
       {select: ['userId', 'firstName', 'lastName', 'photoUploaded']}
     );
   }
+
+  async getProfile(userId: number): Promise<Profile> {
+    return await this.profileRepository.findOneOrFail({userId});
+  }
 }

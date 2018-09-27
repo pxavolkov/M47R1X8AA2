@@ -1,4 +1,4 @@
-import { Sex } from './enums';
+import { Sex, HackMinigame, HackType } from './enums';
 import { Property } from './master';
 
 export class LoginResponse {
@@ -126,4 +126,32 @@ export interface KbEntry {
 export interface KbEntriesResponse {
   server: KbServer;
   entries: KbEntry[];
+}
+
+export interface HackStart {
+  id: number;
+  minigame: HackMinigame;
+  minScore: number;
+}
+
+export interface HackToken {
+  id: number;
+  expire: Date;
+  type: HackType;
+  targetUserId: number | null;
+  targetServerId: number | null;
+  targetEntryId: number | null;
+}
+
+export interface HackKbData {
+  serverName: string;
+  description?: string;
+  key?: string;
+  password?: string;
+  encryptionKey?: string;
+}
+
+export interface HackKbResponse {
+  type: HackType;
+  data: HackKbData;
 }

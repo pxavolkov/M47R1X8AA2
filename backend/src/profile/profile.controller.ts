@@ -2,8 +2,6 @@ import { Controller, Get, Post, UseGuards, UploadedFile, FileInterceptor, Reques
         UseInterceptors, Body, ForbiddenException, BadRequestException, Query} from '@nestjs/common';
 import { Logger } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { rename, unlink} from 'fs';
-import * as mkdirp from 'mkdirp';
 import { ProfileService } from './profile.service';
 import { NewsService } from '../news/news.service';
 import { ProfileResponse, PublicProfile, StartMiningResponse } from '@shared/responses';
@@ -12,9 +10,10 @@ import { CitizenGuard } from '../auth/citizen.guard';
 import { MessageService } from 'message/message.service';
 import { TransferMoney } from '@shared/requests';
 import { EventService } from '../event/event.service';
-import { EventType, Sex, Role } from '@shared/enums';
+import { EventType, Sex, Role, HackType } from '@shared/enums';
 import utils from '../utils';
-import { User } from 'user/user.entity';
+import { User } from '../user/user.entity';
+import { HackService } from '../hack/hack.service';
 
 const objectify = (obj, [k, v]) => ({ ...obj, [k]: v });
 
@@ -26,6 +25,7 @@ export class ProfileController {
     private readonly newsService: NewsService,
     private readonly messageService: MessageService,
     private readonly eventService: EventService,
+    private readonly hackService: HackService,
   ) {}
 
   @Get('load')
@@ -33,24 +33,36 @@ export class ProfileController {
   async load(@Request() {user}: {user: User}, @Query('userId') userId): Promise<ProfileResponse> {
     if (userId) userId = parseInt(userId, 10);
     const profile = userId ? await this.profileService.findByUser(userId) : user.profile;
+    const isHacker = (
+      user.roles.has(Role.Hacker) &&
+      await this.hackService.findActiveToken(user.id, HackType.PROFILE_VIEW, userId)
+    );
     const isMaster = user.roles.has(Role.Master);
+    const isMasterOrHacker = isMaster || isHacker;
     const response = new ProfileResponse();
     response.id = userId || user.id;
     for (const p in response) response[p] = (p in profile ? profile : response)[p];
 
-    response.miningEndTime = (!userId || isMaster) && profile.miningTime ?
+    response.miningEndTime = (!userId || isMasterOrHacker) && profile.miningTime ?
       profile.miningTime.getTime() + parseInt(process.env.MINING_TIME_MS, 10) :
       null;
     response.miningAmount = parseInt(process.env.MINING_AMOUNT, 10);
 
-    if (!user.roles.has(Role.Marshal) && !isMaster) {
+    if (!user.roles.has(Role.Marshal) && !isMasterOrHacker) {
       response.balance = null;
       response.age = null;
     }
-    if (userId) this.eventService.add(user.id, EventType.PROFILE_VIEW, {userId, roles: user.roles.toNumber()});
+    if (userId) {
+      this.eventService.add(user.id, EventType.PROFILE_VIEW, {
+        userId,
+        roles: user.roles.toNumber(),
+        isHacker,
+        isMaster,
+      });
+    }
 
     response.unreadNews = userId ? 0 : await this.newsService.unreadNewsCountByUserId(user.id);
-    response.unreadMessages = userId ? 0 : await this.messageService.unreadCountByUserId(user.id);
+    response.unreadMessages = userId && !isMasterOrHacker ? 0 : await this.messageService.unreadCountByUserId(user.id);
     response.quentaExists = !!profile.quentaPath;
     return response;
   }
@@ -109,22 +121,38 @@ export class ProfileController {
 
   @Post('transfer')
   @UseGuards(AuthGuard('jwt'))
-  async transfer(@Request() {user}, @Body() data: TransferMoney): Promise<'success'> {
+  async transfer(
+    @Request() {user}: {user: User},
+    @Body() data: TransferMoney,
+    @Query('userId') userId
+  ): Promise<'success'> {
     if (!(data.amount > 0)) throw new BadRequestException();
 
-    const balance = await this.profileService.getBalance(user.id);
+    if (userId) userId = parseInt(userId, 10);
+    const profile = userId ? await this.profileService.findByUser(userId) : user.profile;
+    const isHacker = (
+      user.roles.has(Role.Hacker) &&
+      await this.hackService.findActiveToken(user.id, HackType.PROFILE_EDIT, userId)
+    );
+    const isMaster = user.roles.has(Role.Master);
+    const isMasterOrHacker = isMaster || isHacker;
+    if (userId && !isMasterOrHacker) throw new ForbiddenException();
+
+    const balance = await this.profileService.getBalance(profile.userId);
     if (balance >= data.amount) {
-      await this.profileService.transfer(user.id, data.userId, data.amount);
-      this.eventService.add(user, EventType.MONEY_TRANSFER, {
+      await this.profileService.transfer(profile.userId, data.userId, data.amount);
+      this.eventService.add(profile.userId, EventType.MONEY_TRANSFER, {
         toUserId: data.userId,
         balanceBefore: balance,
-        amount: data.amount
+        amount: data.amount,
+        hacker: isHacker ? user.id : undefined,
+        master: isMaster ? user.id : undefined,
       });
 
-      const who = user.profile.sex === Sex.MALE ? ' перевел ' : ' перевела ';
+      const who = profile.sex === Sex.MALE ? ' перевел ' : ' перевела ';
       const mod = data.amount % 10;
       const cr = mod === 1 ? ' кредит' : (mod < 5 && mod !== 0 ? ' кредита' : ' кредитов');
-      const message = user.profile.firstName + ' ' + user.profile.lastName + who + data.amount + cr;
+      const message = profile.firstName + ' ' + profile.lastName + who + data.amount + cr;
       this.messageService.sendNotification(data.userId, message);
 
       return 'success';

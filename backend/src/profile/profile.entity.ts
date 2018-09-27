@@ -49,4 +49,16 @@ export class Profile {
 
   @Column({nullable: true})
   bandid: string;
+
+  @Column({default: 0})
+  hackLevel: number;
+
+  @Column({default: 0})
+  hackDefenseProfile: number;
+
+  @Column({default: 0})
+  hackDefenseInventory: number;
+
+  @Column({default: 0})
+  hackDefenseMessages: number;
 }

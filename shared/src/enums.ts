@@ -41,6 +41,8 @@ export enum EventType {
   GIFT_ITEM = 'GIFT_ITEM', // {id:number,userId:number,itemId:number,itemAmount:number}
   GIFT_PROPERTY = 'GIFT_PROPERTY', // {id:number,userId:number,propertyId:number,propertyValue:string}
   GIFT_ACTIVATE = 'GIFT_ACTIVATE', // {id:number,userId:number}
+  MESSAGE_VIEW = 'MESSAGE_VIEW',
+  MESSAGE_SEND = 'MESSAGE_SEND',
 }
 // tslint:enable max-line-length
 
@@ -51,4 +53,25 @@ export enum Role {
   Medic = 1 << 2,
   Marshal = 1 << 3,
   All = 1 << 4,
+  Hacker = 1 << 5,
+}
+// tslint:enable no-bitwise
+
+export enum HackType {
+  PROFILE_VIEW = 'PROFILE_VIEW',
+  PROFILE_EDIT = 'PROFILE_EDIT',
+  INVENTORY_VIEW = 'INVENTORY_VIEW',
+  INVENTORY_EDIT = 'INVENTORY_EDIT',
+  MESSAGES_VIEW = 'MESSAGES_VIEW',
+  MESSAGES_EDIT = 'MESSAGES_EDIT',
+  KB_SERVER_PASSWORD = 'KB_SERVER_PASSWORD',
+  KB_ENTRY_PASSWORD = 'KB_ENTRY_PASSWORD',
+  KB_ENTRY_ENCRYPTION_KEY = 'KB_ENTRY_ENCRYPTION_KEY',
+  KB_FIND_SERVER = 'KB_FIND_SERVER',
+}
+
+export enum HackMinigame {
+  SNAKE = 'SNAKE',
+  TETRIS = 'TETRIS',
+  BREAKOUT = 'BREAKOUT',
 }

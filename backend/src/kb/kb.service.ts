@@ -20,6 +20,13 @@ export class KbService {
     });
   }
 
+  async getHiddenServers(): Promise<KbServer[]> {
+    return await this.kbServerRepository.find({
+      select: ['id', 'name', 'description', 'roles', 'password', 'hackDefense'],
+      where: {isHidden: true, isDeleted: false}
+    });
+  }
+
   async getEntries(serverId: number): Promise<KbEntry[]> {
     return await this.kbEntryRepository.find({
       select: ['id', 'key', 'password', 'roles'],

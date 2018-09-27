@@ -16,6 +16,7 @@ import { MessageModule } from '../message/message.module';
 import { ItemModule } from '../item/item.module';
 import { InventoryModule } from '../inventory/inventory.module';
 import { KbModule } from '../kb/kb.module';
+import { HackModule } from '../hack/hack.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { KbModule } from '../kb/kb.module';
     ItemModule,
     InventoryModule,
     KbModule,
+    HackModule,
   ],
   controllers: [AppController],
 })
