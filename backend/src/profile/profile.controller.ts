@@ -48,7 +48,7 @@ export class ProfileController {
       null;
     response.miningAmount = parseInt(process.env.MINING_AMOUNT, 10);
 
-    if (!user.roles.has(Role.Marshal) && !isMasterOrHacker) {
+    if (userId && !user.roles.has(Role.Marshal) && !isMasterOrHacker) {
       response.balance = null;
       response.age = null;
     }
