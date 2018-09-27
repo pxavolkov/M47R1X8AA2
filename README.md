@@ -82,7 +82,7 @@ server {
          try_files $uri $uri/ /index.html =404;
        }
 
-       location ~* \.(?:ico|css|js|gif|jpe?g|png)$ {
+       location ~* ^(?!\/api\/).*\.(?:ico|css|js|gif|jpe?g|png)$ {
          # Some basic cache-control for static files to be sent to the browser
          expires max;
          add_header Pragma public;
