@@ -45,9 +45,14 @@
             </div>
           </div>
         </b-col>
-        <router-link to="/Shop" tag="b-col" cols="6" sm="6" class="fontsize200 shopButton" :class="{'disabled': id}">
-          <img src="@/assets/img/shopr.png" class="imgButton"/>
-        </router-link>
+        <b-col cols="6" sm="6" class="fontsize200">
+          <router-link to="/Inventory" tag="div" class="invButton">
+            <img src="@/assets/img/inv.png" class="imgButton"/>
+          </router-link>
+          <router-link to="/Info" tag="div" class="skillsButton">
+            <img src="@/assets/img/skills.png" class="imgButton"/>
+          </router-link>
+        </b-col>
 
         <b-col cols="12">
           <router-link to="/User" >
@@ -192,12 +197,20 @@ export default class Profile extends Vue {
   margin-bottom: 10px;
 }
 
-.shopButton {
+.invButton, .skillsButton {
   @extend .blueBorderButton;
-  margin-left: -5px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  margin-left: -15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  img {
+    width: 44px;
+  }
+}
+
+.skillsButton {
+  margin-top: 5px;
 }
 
 .newsCount {
