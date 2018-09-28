@@ -63,16 +63,16 @@ const router = new Router({
           meta: {requiresNoAuth: true},
         },
         {
+          path: '/Profile/UploadPhoto',
+          name: 'UploadPhoto',
+          component: UploadPhoto,
+          meta: {requiresAuth: true},
+        },
+        {
           path: '/Profile/:id?',
           name: 'Profile',
           component: Profile,
           props: true,
-          meta: {requiresAuth: true},
-        },
-        {
-          path: '/Profile/UploadPhoto',
-          name: 'UploadPhoto',
-          component: UploadPhoto,
           meta: {requiresAuth: true},
         },
         {
