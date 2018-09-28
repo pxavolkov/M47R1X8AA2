@@ -72,7 +72,7 @@ export class PropertyService {
       .addSelect('v.value', 'value')
       .leftJoin(PropertyValue, 'v', 'p.id = v.propertyId AND v.userId = :userId')
       .where('((p.viewRoles & :mask) > 0 AND v.value IS NOT NULL) OR (p.editRoles & :mask) > 0')
-      .setParameters({userId, mask})
+      .setParameters({userId, mask: mask.toNumber()})
       .getRawMany() as any)
       .map(({canEdit, ...values}) => ({canEdit: canEdit === '1', ...values}));
   }
