@@ -109,7 +109,8 @@ export class MessageGateway implements OnGatewayInit {
     }
     const messages = await this.messageService.getDialog(mainUser.id, userId);
     await this.messageService.markDialogAsRead(userId, mainUser.id);
-    const user2 = await this.profileService.getPublicProfile(userId);
+    const {userId: user2Id, firstName, lastName, photoUploaded} = await this.profileService.getPublicProfile(userId);
+    const user2 = {id: user2Id, firstName, lastName, photoUploaded};
     if (isMasterOrHacker) {
       this.eventService.add(user.id, EventType.MESSAGE_VIEW, {user1: mainUser, user2: userId, isMaster, isHacker});
     }
